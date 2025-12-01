@@ -172,7 +172,9 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      john_hagging_aimdowndiag_firing_0: 972684946506582038
+      john_hagging_aimdowndiag_firing_1: 5522051757520525794
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

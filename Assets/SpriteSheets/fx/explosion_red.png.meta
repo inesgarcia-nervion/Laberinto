@@ -347,7 +347,16 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      explosion_red_0: 2123764579975810905
+      explosion_red_1: -5015989794604385414
+      explosion_red_2: 6075465787862520609
+      explosion_red_3: 3828568651697962166
+      explosion_red_4: -1110443363522023369
+      explosion_red_5: -6908369614560568736
+      explosion_red_6: 2891028765888089253
+      explosion_red_7: -6318848788414751839
+      explosion_red_8: 279344556193972646
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

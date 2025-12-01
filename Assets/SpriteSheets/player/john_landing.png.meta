@@ -197,7 +197,10 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      john_landing_0: 6008917192840267984
+      john_landing_1: -6161194968454739582
+      john_landing_2: 6301523642654216495
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

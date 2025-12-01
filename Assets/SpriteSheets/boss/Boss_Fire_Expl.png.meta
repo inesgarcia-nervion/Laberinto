@@ -322,7 +322,15 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      Boss_Fire_Expl_0: 7736657528213089836
+      Boss_Fire_Expl_1: -3953573760055715535
+      Boss_Fire_Expl_2: 1072499105237980774
+      Boss_Fire_Expl_3: -588775124560733954
+      Boss_Fire_Expl_4: 2868322593061522534
+      Boss_Fire_Expl_5: -4868741889072750679
+      Boss_Fire_Expl_6: -1537677919623471389
+      Boss_Fire_Expl_7: -8816396625337904571
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

@@ -1647,7 +1647,68 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      BossScreen_Anim_intro_0: -7718566547551685729
+      BossScreen_Anim_intro_1: 8848637769702666835
+      BossScreen_Anim_intro_10: -5016409480197923490
+      BossScreen_Anim_intro_11: -2581674321551750461
+      BossScreen_Anim_intro_12: -8612126852658927197
+      BossScreen_Anim_intro_13: 6825051950049377615
+      BossScreen_Anim_intro_14: -6716408330999066947
+      BossScreen_Anim_intro_15: -4055780061684914106
+      BossScreen_Anim_intro_16: 6803318292125260878
+      BossScreen_Anim_intro_17: -2284080363868665487
+      BossScreen_Anim_intro_18: -4300692390258903760
+      BossScreen_Anim_intro_19: -1818788966406017408
+      BossScreen_Anim_intro_2: -8027889715420211944
+      BossScreen_Anim_intro_20: 1732693637727742492
+      BossScreen_Anim_intro_21: -1996277511126569673
+      BossScreen_Anim_intro_22: -4735808003743034964
+      BossScreen_Anim_intro_23: 8512970048947402146
+      BossScreen_Anim_intro_24: -4633792996177156590
+      BossScreen_Anim_intro_25: -8783938346514263795
+      BossScreen_Anim_intro_26: 907812018152948251
+      BossScreen_Anim_intro_27: -7982419212326796880
+      BossScreen_Anim_intro_28: -1615533139598822209
+      BossScreen_Anim_intro_29: -295884712714816792
+      BossScreen_Anim_intro_3: -1382728721765739674
+      BossScreen_Anim_intro_30: -1201676751811378149
+      BossScreen_Anim_intro_31: -289141859414271014
+      BossScreen_Anim_intro_32: -1052982954360958354
+      BossScreen_Anim_intro_33: 2890056978138743294
+      BossScreen_Anim_intro_34: -7671779110946595894
+      BossScreen_Anim_intro_35: 4975012223915034573
+      BossScreen_Anim_intro_36: -3140438764604091430
+      BossScreen_Anim_intro_37: 5809714171670575913
+      BossScreen_Anim_intro_38: 3645968373884812748
+      BossScreen_Anim_intro_39: -6146498005301033781
+      BossScreen_Anim_intro_4: 6240152837892192968
+      BossScreen_Anim_intro_40: 1427376753580473591
+      BossScreen_Anim_intro_41: -7081460658428453517
+      BossScreen_Anim_intro_42: 4086421003138123955
+      BossScreen_Anim_intro_43: -5438353501402202844
+      BossScreen_Anim_intro_44: -5731611546077144218
+      BossScreen_Anim_intro_45: -6491818392568980958
+      BossScreen_Anim_intro_46: 3685276534136978499
+      BossScreen_Anim_intro_47: -7256415944178265898
+      BossScreen_Anim_intro_48: 8222677968546875852
+      BossScreen_Anim_intro_49: -3854159532572504644
+      BossScreen_Anim_intro_5: 3766079100960955370
+      BossScreen_Anim_intro_50: 8922744135086240039
+      BossScreen_Anim_intro_51: -5544815218841502017
+      BossScreen_Anim_intro_52: 6365152991091106707
+      BossScreen_Anim_intro_53: 7904762727021762842
+      BossScreen_Anim_intro_54: -2277126763094633389
+      BossScreen_Anim_intro_55: 2632266039501343036
+      BossScreen_Anim_intro_56: 2632353238375894169
+      BossScreen_Anim_intro_57: -3766291162713483586
+      BossScreen_Anim_intro_58: 1848675056179767795
+      BossScreen_Anim_intro_59: 1608841975880391051
+      BossScreen_Anim_intro_6: 195023424380871346
+      BossScreen_Anim_intro_60: 7238488977936382929
+      BossScreen_Anim_intro_7: -560978217717261636
+      BossScreen_Anim_intro_8: -3420430772537479685
+      BossScreen_Anim_intro_9: -3809769405619574942
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

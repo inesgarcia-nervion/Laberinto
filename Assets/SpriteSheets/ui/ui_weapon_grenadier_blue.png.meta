@@ -147,7 +147,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      ui_weapon_grenadier_blue_0: 3841412370328207627
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

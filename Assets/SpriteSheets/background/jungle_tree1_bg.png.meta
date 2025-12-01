@@ -147,7 +147,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      jungle_tree1_bg_0: 5405412313451816270
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

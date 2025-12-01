@@ -147,7 +147,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      ui_weapon_shield_red_0: -8864719385344610290
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

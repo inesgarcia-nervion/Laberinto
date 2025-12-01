@@ -347,7 +347,16 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      john_jump_ng_aimup_0: 6806646962372743160
+      john_jump_ng_aimup_1: 6665870546753352414
+      john_jump_ng_aimup_2: -885320226124271530
+      john_jump_ng_aimup_3: 5548664650079591311
+      john_jump_ng_aimup_4: -7821276479865222340
+      john_jump_ng_aimup_5: -6300324233640155226
+      john_jump_ng_aimup_6: -1535693739484260930
+      john_jump_ng_aimup_7: 1061463216474134867
+      john_jump_ng_aimup_8: -5108167189570189049
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

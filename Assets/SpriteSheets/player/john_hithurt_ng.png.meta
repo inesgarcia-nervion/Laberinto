@@ -172,7 +172,9 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      john_hithurt_ng_0: -7885079966012664643
+      john_hithurt_ng_1: 7162735939835683802
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

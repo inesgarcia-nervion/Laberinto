@@ -1622,7 +1622,67 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      main_title_press_start(201x23)_x.5_0: 2330178928113190896
+      main_title_press_start(201x23)_x.5_1: -3651771950111323213
+      main_title_press_start(201x23)_x.5_10: -3039660400251188577
+      main_title_press_start(201x23)_x.5_11: 3829145333787629135
+      main_title_press_start(201x23)_x.5_12: -1419885931928234979
+      main_title_press_start(201x23)_x.5_13: 257265070382180690
+      main_title_press_start(201x23)_x.5_14: -1596434853088511981
+      main_title_press_start(201x23)_x.5_15: 3976046603189531221
+      main_title_press_start(201x23)_x.5_16: -5312223351282484804
+      main_title_press_start(201x23)_x.5_17: 2021592002278276031
+      main_title_press_start(201x23)_x.5_18: -66119731046094543
+      main_title_press_start(201x23)_x.5_19: -7848876387826475500
+      main_title_press_start(201x23)_x.5_2: -2351659523804600974
+      main_title_press_start(201x23)_x.5_20: 5047498220460855191
+      main_title_press_start(201x23)_x.5_21: 8056622237534790036
+      main_title_press_start(201x23)_x.5_22: -2489866290769794043
+      main_title_press_start(201x23)_x.5_23: -6299937797516470385
+      main_title_press_start(201x23)_x.5_24: -8692508420017742188
+      main_title_press_start(201x23)_x.5_25: 7735140521702668905
+      main_title_press_start(201x23)_x.5_26: -7667939813398321951
+      main_title_press_start(201x23)_x.5_27: -3382975487116932846
+      main_title_press_start(201x23)_x.5_28: -9019685078418590797
+      main_title_press_start(201x23)_x.5_29: 4394833790356332873
+      main_title_press_start(201x23)_x.5_3: 8533697155281861092
+      main_title_press_start(201x23)_x.5_30: 4420381188545936152
+      main_title_press_start(201x23)_x.5_31: -1000317857624354644
+      main_title_press_start(201x23)_x.5_32: -4808937888857550466
+      main_title_press_start(201x23)_x.5_33: 3892519582024679827
+      main_title_press_start(201x23)_x.5_34: 3957740930976496012
+      main_title_press_start(201x23)_x.5_35: 4889773715391791753
+      main_title_press_start(201x23)_x.5_36: 153335382701896112
+      main_title_press_start(201x23)_x.5_37: -1534777999208152177
+      main_title_press_start(201x23)_x.5_38: -5375869924714328834
+      main_title_press_start(201x23)_x.5_39: 7760006409298208360
+      main_title_press_start(201x23)_x.5_4: -4816043582073045950
+      main_title_press_start(201x23)_x.5_40: 7525853249681538132
+      main_title_press_start(201x23)_x.5_41: 3566315343266183926
+      main_title_press_start(201x23)_x.5_42: -7874771104282250552
+      main_title_press_start(201x23)_x.5_43: -576704144321135862
+      main_title_press_start(201x23)_x.5_44: -9149940183920767771
+      main_title_press_start(201x23)_x.5_45: 3188030876198908740
+      main_title_press_start(201x23)_x.5_46: -5137317690186160523
+      main_title_press_start(201x23)_x.5_47: -6046696544554073464
+      main_title_press_start(201x23)_x.5_48: 8532785944239426820
+      main_title_press_start(201x23)_x.5_49: 3385992987514166378
+      main_title_press_start(201x23)_x.5_5: 4958563548724583324
+      main_title_press_start(201x23)_x.5_50: -5662205302365563235
+      main_title_press_start(201x23)_x.5_51: 3253235137565284387
+      main_title_press_start(201x23)_x.5_52: 5119803490112392167
+      main_title_press_start(201x23)_x.5_53: -3741981967152227116
+      main_title_press_start(201x23)_x.5_54: -2345772060121138291
+      main_title_press_start(201x23)_x.5_55: 501846773574459162
+      main_title_press_start(201x23)_x.5_56: 2011625244305329141
+      main_title_press_start(201x23)_x.5_57: 4926491486091312418
+      main_title_press_start(201x23)_x.5_58: 1054600800460783995
+      main_title_press_start(201x23)_x.5_59: -6086384761144100014
+      main_title_press_start(201x23)_x.5_6: 4772716294504513488
+      main_title_press_start(201x23)_x.5_7: -7231285195136943928
+      main_title_press_start(201x23)_x.5_8: 5644431663649939635
+      main_title_press_start(201x23)_x.5_9: -8331670291952446656
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

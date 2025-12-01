@@ -147,7 +147,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      ui_weapon_curve_blue_0: -2918034424886140441
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

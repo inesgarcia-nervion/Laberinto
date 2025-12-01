@@ -422,7 +422,19 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      BossScreen_Anim_openmouth_fire_0: -8936288114101589245
+      BossScreen_Anim_openmouth_fire_1: 1728360309652643011
+      BossScreen_Anim_openmouth_fire_10: -2994537201078921105
+      BossScreen_Anim_openmouth_fire_11: 6854784632626885129
+      BossScreen_Anim_openmouth_fire_2: 7209653021434391330
+      BossScreen_Anim_openmouth_fire_3: -4544081273867470395
+      BossScreen_Anim_openmouth_fire_4: -5537532642700382169
+      BossScreen_Anim_openmouth_fire_5: 9183010818655584572
+      BossScreen_Anim_openmouth_fire_6: 2901133162041867167
+      BossScreen_Anim_openmouth_fire_7: -2133309302310529766
+      BossScreen_Anim_openmouth_fire_8: -328282409813747247
+      BossScreen_Anim_openmouth_fire_9: -4975516320254668203
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

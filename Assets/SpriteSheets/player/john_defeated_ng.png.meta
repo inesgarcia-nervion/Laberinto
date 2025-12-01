@@ -372,7 +372,17 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      john_defeated_ng_0: 8889484820977338249
+      john_defeated_ng_1: -5475619918789228733
+      john_defeated_ng_2: 8927738388234785751
+      john_defeated_ng_3: 4106992551734775851
+      john_defeated_ng_4: -2663169922439404175
+      john_defeated_ng_5: -6004376311947121508
+      john_defeated_ng_6: 688595568373555368
+      john_defeated_ng_7: 8275300945701612779
+      john_defeated_ng_8: 4892108211687138650
+      john_defeated_ng_9: -8259554737484061188
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
