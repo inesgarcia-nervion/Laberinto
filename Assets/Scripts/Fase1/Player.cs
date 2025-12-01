@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 
 public class Player : MonoBehaviour
@@ -12,6 +13,11 @@ public class Player : MonoBehaviour
     public float speed = 5.0f; // Subí un poco la velocidad base
     private Rigidbody2D rb;
     private Vector2 movimiento; // Guardamos el input aquí para usarlo en FixedUpdate
+    public float salud;
+    public bool dead = false;
+    public TextMeshProUGUI vidasHud;
+
+
 
     void Start()
     {
@@ -21,6 +27,8 @@ public class Player : MonoBehaviour
         {
             rb.gravityScale = 0f;
             rb.freezeRotation = true;
+            salud = 3;
+            ActualizaHud();
         }
     }
 
@@ -55,5 +63,31 @@ public class Player : MonoBehaviour
             // MovePosition es mucho más sólido que Translate para colisiones
             rb.MovePosition(rb.position + movimiento * speed * Time.fixedDeltaTime);
         }
+    }
+
+
+    public void Hit()
+    {
+        if (dead)
+            return;
+
+        salud -= 1;
+        if (salud <= 0)
+        {
+            salud = 0;
+            dead = true;
+        }
+        ActualizaHud();
+    }
+
+
+    public void destruirObjeto()
+    {
+        Destroy(gameObject);
+    }
+
+    private void ActualizaHud()
+    {
+        vidasHud.text = "Vida: " + salud.ToString();
     }
 }
