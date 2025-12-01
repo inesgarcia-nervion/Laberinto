@@ -147,7 +147,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      ui_weapon_tribow_blue_0: 7017870220879345325
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

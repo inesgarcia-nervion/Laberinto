@@ -147,7 +147,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      ui_nade_red_0: -5383640436897958674
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

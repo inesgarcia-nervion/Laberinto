@@ -422,7 +422,19 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      BossHeadIdle_0: 2967082414085178799
+      BossHeadIdle_1: 7123287599836941819
+      BossHeadIdle_10: 6675303119556916908
+      BossHeadIdle_11: 2885620576170527317
+      BossHeadIdle_2: -8094451497341950130
+      BossHeadIdle_3: 4709276106062927037
+      BossHeadIdle_4: 16215043040885826
+      BossHeadIdle_5: 6459729115170634958
+      BossHeadIdle_6: 5683106821836883527
+      BossHeadIdle_7: 6792696069527901714
+      BossHeadIdle_8: 3257788058345032475
+      BossHeadIdle_9: -2675703687973276405
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

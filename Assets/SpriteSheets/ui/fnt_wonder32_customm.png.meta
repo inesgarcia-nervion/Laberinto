@@ -972,7 +972,41 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      fnt_wonder32_customm_0: -3797027227222960880
+      fnt_wonder32_customm_1: -2935555465332127358
+      fnt_wonder32_customm_10: -7584807755706098450
+      fnt_wonder32_customm_11: -2004069807596820127
+      fnt_wonder32_customm_12: 1845041052335435398
+      fnt_wonder32_customm_13: -1962159768483265579
+      fnt_wonder32_customm_14: -2741587002848462054
+      fnt_wonder32_customm_15: 1163222018068333202
+      fnt_wonder32_customm_16: -562539134637583015
+      fnt_wonder32_customm_17: 4783207316901222905
+      fnt_wonder32_customm_18: -5141938846335230635
+      fnt_wonder32_customm_19: -6968935289733981429
+      fnt_wonder32_customm_2: -7160002103771892905
+      fnt_wonder32_customm_20: 6885896946482907527
+      fnt_wonder32_customm_21: 7283131671127836942
+      fnt_wonder32_customm_22: 6292712233324559264
+      fnt_wonder32_customm_23: -2174887402372108831
+      fnt_wonder32_customm_24: 1486855154352947722
+      fnt_wonder32_customm_25: -5970500734950587039
+      fnt_wonder32_customm_26: 3539007656045422099
+      fnt_wonder32_customm_27: -750174908621711104
+      fnt_wonder32_customm_28: -3622385898029296122
+      fnt_wonder32_customm_29: -8590752298429984162
+      fnt_wonder32_customm_3: 151272733204744044
+      fnt_wonder32_customm_30: 6438126275519019646
+      fnt_wonder32_customm_31: 3084327790854865932
+      fnt_wonder32_customm_32: -6014629198190003110
+      fnt_wonder32_customm_33: -2942672344462773906
+      fnt_wonder32_customm_4: 7975858269453034395
+      fnt_wonder32_customm_5: 7438630663006671217
+      fnt_wonder32_customm_6: -2867263514385839110
+      fnt_wonder32_customm_7: 8462658598038541559
+      fnt_wonder32_customm_8: -9022600739504186240
+      fnt_wonder32_customm_9: -5962999167781346053
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

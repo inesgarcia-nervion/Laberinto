@@ -372,7 +372,17 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      john_run_shoot_ng_0: 6112143610265525769
+      john_run_shoot_ng_1: -1809827790970302285
+      john_run_shoot_ng_2: 1711490366261072853
+      john_run_shoot_ng_3: 4393420326621945794
+      john_run_shoot_ng_4: -3834947912053089693
+      john_run_shoot_ng_5: -8149390110556942986
+      john_run_shoot_ng_6: -1554354489791471762
+      john_run_shoot_ng_7: -6275966587728010360
+      john_run_shoot_ng_8: 4592538552707926659
+      john_run_shoot_ng_9: 7599150372004926260
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

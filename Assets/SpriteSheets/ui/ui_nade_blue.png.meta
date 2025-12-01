@@ -147,7 +147,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      ui_nade_blue_0: -2099381560766157081
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

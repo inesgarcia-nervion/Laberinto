@@ -172,7 +172,9 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      john_dead_soul_0: -9017444308583300109
+      john_dead_soul_1: -6063760930152125431
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

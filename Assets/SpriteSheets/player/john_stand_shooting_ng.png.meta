@@ -172,7 +172,9 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      john_stand_shooting_ng_0: -6843451997363835417
+      john_stand_shooting_ng_1: -1814016180195581842
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

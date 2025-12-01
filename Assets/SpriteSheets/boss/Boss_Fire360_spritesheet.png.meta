@@ -397,7 +397,18 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      Boss_Fire360_spritesheet_0: -5640943464909038951
+      Boss_Fire360_spritesheet_1: -6721320861435603940
+      Boss_Fire360_spritesheet_10: 9093992632320973120
+      Boss_Fire360_spritesheet_2: 8551415049181834030
+      Boss_Fire360_spritesheet_3: 3377508588300844163
+      Boss_Fire360_spritesheet_4: 876023678844720701
+      Boss_Fire360_spritesheet_5: 2016431884642898115
+      Boss_Fire360_spritesheet_6: 7731853133280581995
+      Boss_Fire360_spritesheet_7: 655184722297588372
+      Boss_Fire360_spritesheet_8: 1761601156506190
+      Boss_Fire360_spritesheet_9: 7977475024155314280
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

@@ -447,7 +447,20 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      player_weapon_break_0: 4825865351073411280
+      player_weapon_break_1: -100405976879296637
+      player_weapon_break_10: 639816998034372150
+      player_weapon_break_11: -3048091645532322807
+      player_weapon_break_12: -2616702080455386391
+      player_weapon_break_2: -439074570923941809
+      player_weapon_break_3: 626136621929854956
+      player_weapon_break_4: -2848341476259931489
+      player_weapon_break_5: 8535247583752480934
+      player_weapon_break_6: 2993416591342293944
+      player_weapon_break_7: -706194269358789552
+      player_weapon_break_8: -4414270512133586154
+      player_weapon_break_9: 4066800825464486890
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

@@ -147,7 +147,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      ui_weapon_repeater_blue_0: 8261885519072101595
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

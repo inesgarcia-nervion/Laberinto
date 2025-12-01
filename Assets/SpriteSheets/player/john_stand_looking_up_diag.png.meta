@@ -147,7 +147,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      john_stand_looking_up_diag_0: -1491828876028453987
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
