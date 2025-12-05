@@ -15,18 +15,17 @@ public class Player : MonoBehaviour
 
     public float salud;
     public bool dead = false;
-<<<<<<< HEAD
-    public TextMeshProUGUI vidasHud;
+    public TextMeshProUGUI vidasHud; 
 
+    // Variables fusionadas del conflicto
     [Header("Ataque")]
     public float tiempoEntreDisparos = 0.5f;
     public GameObject proyectilPrefab;
     public Transform puntoDisparo;
-=======
-    public TextMeshProUGUI vidasHud; 
+    
     private Vector3 puntoDeInicio;
     private GameManager gameManager;
->>>>>>> 8a98908507cd13ee2b8c3325056c1c9936f0ef14
+
 
     void Start()
     {
