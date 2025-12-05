@@ -17,7 +17,10 @@ public class Player : MonoBehaviour
     public bool dead = false;
     public TextMeshProUGUI vidasHud;
 
-
+    [Header("Ataque")]
+    public float tiempoEntreDisparos = 0.5f;
+    public GameObject proyectilPrefab;
+    public Transform puntoDisparo;
 
     void Start()
     {
@@ -52,6 +55,12 @@ public class Player : MonoBehaviour
 
             Quaternion rotacionObjetivo = Quaternion.Euler(0f, 0f, angulo);
             conoDeLuz.rotation = Quaternion.Lerp(conoDeLuz.rotation, rotacionObjetivo, Time.deltaTime * velocidadRotacion);
+        }
+
+        // 3. DISPARO
+        if (Input.GetButtonDown("Fire1"))
+        {
+            Disparar();
         }
     }
 
@@ -89,5 +98,19 @@ public class Player : MonoBehaviour
     private void ActualizaHud()
     {
         vidasHud.text = "Vida: " + salud.ToString();
+    }
+
+    void Disparar()
+    {
+        if (dead) return;
+
+        GameObject proyectil = Instantiate(proyectilPrefab, puntoDisparo.position, puntoDisparo.rotation);
+        Rigidbody2D rbProyectil = proyectil.GetComponent<Rigidbody2D>();
+        if (rbProyectil != null)
+        {
+            rbProyectil.linearVelocity = conoDeLuz.up * 10f; // Ajusta la velocidad del proyectil aquí
+        }
+
+        Destroy(proyectil, 2f); // Destruir el proyectil después de 2 segundos para evitar congestión de objetos
     }
 }
