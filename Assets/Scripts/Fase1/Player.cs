@@ -15,14 +15,8 @@ public class Player : MonoBehaviour
 
     public float salud;
     public bool dead = false;
-    public TextMeshProUGUI vidasHud; 
+    public TextMeshProUGUI vidasHud;
 
-    // Variables fusionadas del conflicto
-    [Header("Ataque")]
-    public float tiempoEntreDisparos = 0.5f;
-    public GameObject proyectilPrefab;
-    public Transform puntoDisparo;
-    
     private Vector3 puntoDeInicio;
     private GameManager gameManager;
 
@@ -35,7 +29,7 @@ public class Player : MonoBehaviour
         {
             rb.gravityScale = 0f;
             rb.freezeRotation = true;
-            salud = 2;
+            salud = 2; // Vida inicial
 
             puntoDeInicio = transform.position;
             gameManager = FindObjectOfType<GameManager>();
@@ -46,33 +40,40 @@ public class Player : MonoBehaviour
 
     void Update()
     {
+        // 1. INPUT DE MOVIMIENTO (Horizontal y Vertical)
         float moveX = Input.GetAxisRaw("Horizontal");
         float moveY = Input.GetAxisRaw("Vertical");
         movimiento = new Vector2(moveX, moveY).normalized;
 
+        // 2. ROTACIÓN DEL CONO DE LUZ (Apuntar en dirección de movimiento)
         if (movimiento != Vector2.zero)
         {
+            // Calcula el ángulo de dirección
             float angulo = Mathf.Atan2(movimiento.y, movimiento.x) * Mathf.Rad2Deg;
             angulo += offsetAngulo;
+
+            // Suaviza la rotación del cono de luz
             Quaternion rotacionObjetivo = Quaternion.Euler(0f, 0f, angulo);
             conoDeLuz.rotation = Quaternion.Lerp(conoDeLuz.rotation, rotacionObjetivo, Time.deltaTime * velocidadRotacion);
-        }
-
-        // 3. DISPARO
-        if (Input.GetButtonDown("Fire1"))
-        {
-            Disparar();
         }
     }
 
     void FixedUpdate()
     {
+        // Aplicar movimiento usando Rigidbody2D.MovePosition para el control físico (2D)
         if (rb != null)
         {
             rb.MovePosition(rb.position + movimiento * speed * Time.fixedDeltaTime);
         }
     }
 
+    // -------------------------------------------------------------------
+    //                         MÉTODOS DE VIDA Y UTILIDADES
+    // -------------------------------------------------------------------
+
+    /// <summary>
+    /// Llamado por el enemigo (o cualquier fuente de daño) para golpear al jugador.
+    /// </summary>
     public void Hit()
     {
         if (dead) return;
@@ -84,14 +85,19 @@ public class Player : MonoBehaviour
         {
             salud = 0;
             dead = true;
+            // Destruir o manejar el fin del juego
             Destroy(gameObject);
         }
         else
         {
+            // Respawn al punto de inicio (Punishment de respawn)
             transform.position = puntoDeInicio;
         }
     }
 
+    /// <summary>
+    /// Intenta sanar al jugador si no está a vida máxima.
+    /// </summary>
     public bool GanarVida()
     {
         float maximoDeVidas = 3f;
@@ -100,12 +106,15 @@ public class Player : MonoBehaviour
         {
             salud += 1;
             ActualizaHud();
-            return true; // Nueva vida
+            return true;
         }
 
-        return false; // Ya estaba al máximo y no lo recolecta
+        return false;
     }
 
+    /// <summary>
+    /// Maneja la recolección de un objeto clave (Lámpara/Progreso).
+    /// </summary>
     public void RecolectarLampara()
     {
         if (gameManager != null)
@@ -114,6 +123,9 @@ public class Player : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Actualiza el texto de vidas en la interfaz.
+    /// </summary>
     private void ActualizaHud()
     {
         if (vidasHud != null)
@@ -122,17 +134,4 @@ public class Player : MonoBehaviour
         }
     }
 
-    void Disparar()
-    {
-        if (dead) return;
-
-        GameObject proyectil = Instantiate(proyectilPrefab, puntoDisparo.position, puntoDisparo.rotation);
-        Rigidbody2D rbProyectil = proyectil.GetComponent<Rigidbody2D>();
-        if (rbProyectil != null)
-        {
-            rbProyectil.linearVelocity = conoDeLuz.up * 10f; // Ajusta la velocidad del proyectil aquí
-        }
-
-        Destroy(proyectil, 2f); // Destruir el proyectil después de 2 segundos para evitar congestión de objetos
-    }
 }
