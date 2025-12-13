@@ -17,11 +17,17 @@ public class ControlLampara : MonoBehaviour
 
     // Referencia al script que controla las fases y el tiempo
     private GameManager gameManager;
+    private Timer timer;
 
     void Start()
     {
-        // Buscamos automáticamente al GameManager en la escena al iniciar
-        gameManager = FindObjectOfType<GameManager>();
+        // Preferimos la instancia singleton si existe
+        if (GameManager.Instance != null)
+            gameManager = GameManager.Instance;
+        else
+            gameManager = FindObjectOfType<GameManager>();
+
+        timer = FindObjectOfType<Timer>();
 
         if (gameManager == null)
         {
@@ -65,14 +71,24 @@ public class ControlLampara : MonoBehaviour
         // 2. Marcar como activado para que no se pulse dos veces
         yaActivado = true;
 
-        // 3. LLAMAR AL GAMEMANAGER PARA CAMBIAR DE FASE
+        // 3. Si es la fase final, asegurar que el Timer guarde el tiempo antes de avanzar
+        if (gameManager != null && gameManager.IsLastPhase())
+        {
+            if (timer == null) timer = FindObjectOfType<Timer>();
+            if (timer != null)
+            {
+                timer.FinalizarNivel(); // guarda el tiempo en PlayerPrefs
+            }
+        }
+
+        // 4. LLAMAR AL GAMEMANAGER PARA CAMBIAR DE FASE
         if (gameManager != null)
         {
             Debug.Log("Llamando a PasarDeFase...");
             gameManager.PasarDeFase();
         }
 
-        // 4. Desactivar colliders
+        // 5. Desactivar colliders
         Collider2D[] colliders = GetComponents<Collider2D>();
         foreach (Collider2D col in colliders)
         {

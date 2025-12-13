@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Collections;
 using UnityEngine;
 using TMPro;
 using UnityEngine.SceneManagement;
@@ -10,6 +11,11 @@ public class GameManager : MonoBehaviour
     [Header("UI")]
     public TMP_Text textoTiempo;
     public string timerTag = "Timer";
+
+    [Header("End Game UI")]
+    public TMP_Text endGameText;           // Asignar en inspector o poner tag "EndGameText" en la escena
+    public string endGameTag = "EndGameText";
+    public float endGameDelay = 3f;       // segundos antes de volver al menú
 
     [Header("Estado persistente")]
     public int playerLives = 2;
@@ -73,6 +79,13 @@ public class GameManager : MonoBehaviour
         if (textoTiempo == null)
             ReasignarTimer();
 
+        // Intentar reasignar el texto final si existe en la escena
+        if (endGameText == null && !string.IsNullOrEmpty(endGameTag))
+        {
+            var go = GameObject.FindWithTag(endGameTag);
+            if (go != null) endGameText = go.GetComponent<TMP_Text>();
+        }
+
         var scenePhases = GameObject.FindGameObjectsWithTag("PhaseRoot");
         if (scenePhases != null && scenePhases.Length > 0)
         {
@@ -120,6 +133,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    // Fuente de verdad del tiempo transcurrido
     public float GetElapsedTime()
     {
         if (!inicializado) return 0f;
@@ -150,6 +164,12 @@ public class GameManager : MonoBehaviour
                 fases[faseActual].SetActive(true);
                 return;
             }
+            else
+            {
+                // Se completaron las fases definidas en la escena -> fin del juego
+                StartCoroutine(ShowEndAndReturn());
+                return;
+            }
         }
 
         int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
@@ -161,7 +181,69 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            Debug.Log("No hay más escenas en el Build Index. Juego completado.");
+            // No hay más escenas en el build -> fin del juego
+            StartCoroutine(ShowEndAndReturn());
         }
     }
+
+    IEnumerator ShowEndAndReturn()
+    {
+        // Asegurarse de que el Timer ha guardado el tiempo (Player.RecolectarLampara llama a Timer.FinalizarNivel antes)
+        // Recuperar mejor tiempo desde PlayerPrefs
+        string best = GetBestTimeFormatted();
+
+        if (endGameText != null)
+        {
+            endGameText.gameObject.SetActive(true);
+            endGameText.text = "¡Enhorabuena! Has completado el juego!\nRécord: " + best;
+        }
+        else
+        {
+            Debug.Log("¡Enhorabuena! Has completado el juego! Récord: " + best);
+        }
+
+        yield return new WaitForSecondsRealtime(endGameDelay);
+
+        // Volver al menú (escena índice 0)
+        SceneManager.LoadScene(0);
+    }
+
+    string GetBestTimeFormatted()
+    {
+        string data = PlayerPrefs.GetString("TablaTiempos", "");
+        if (string.IsNullOrEmpty(data)) return "00:00";
+
+        string[] parts = data.Split(',');
+        float best = float.MaxValue;
+        foreach (var p in parts)
+        {
+            if (float.TryParse(p, out float v))
+            {
+                if (v < best) best = v;
+            }
+        }
+
+        if (best == float.MaxValue) return "00:00";
+
+        // Usar mismo formato que MenuInicial (añade +1 como allí para consistencia)
+        best += 1f;
+        int min = Mathf.FloorToInt(best / 60f);
+        int seg = Mathf.FloorToInt(best % 60f);
+        return string.Format("{0:00}:{1:00}", min, seg);
+    }
+
+
+    public bool IsLastPhase()
+    {
+        // Si gestionas fases por GameObjects en la misma escena
+        if (fases != null && fases.Length > 0)
+        {
+            return faseActual >= fases.Length - 1;
+        }
+
+        // Si avanzas por escenas en el build index
+        int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
+        return currentSceneIndex + 1 >= SceneManager.sceneCountInBuildSettings;
+    }
+
 }

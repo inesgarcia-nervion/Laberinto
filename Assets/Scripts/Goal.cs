@@ -31,10 +31,9 @@ public class Goal : MonoBehaviour
 
     void LoadNextScene()
     {
-        // Aquí puedes agregar efectos visuales o de sonido antes de cambiar de escena
-        // Cargar la siguiente escena en el orden de construcción
-        int currentSceneIndex = UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex;
-        UnityEngine.SceneManagement.SceneManager.LoadScene(currentSceneIndex + 1);
+      // Aquí puedes agregar efectos visuales o de sonido antes de cambiar de escena
+      // Cargar la siguiente escena en el orden de construcción
+      int currentSceneIndex = UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex;
+      UnityEngine.SceneManagement.SceneManager.LoadScene(currentSceneIndex + 1);
     }
-
 }

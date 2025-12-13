@@ -266,6 +266,7 @@ GameObject:
   - component: {fileID: 70197837}
   - component: {fileID: 70197839}
   - component: {fileID: 70197838}
+  - component: {fileID: 70197840}
   m_Layer: 5
   m_Name: Tiempos
   m_TagString: Untagged
@@ -391,6 +392,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 70197836}
   m_CullTransparentMesh: 1
+--- !u!114 &70197840
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 70197836}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a77d17aa1e213f448a1504e65e58e21d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  textoRecord: {fileID: 0}
 --- !u!1 &80136892
 GameObject:
   m_ObjectHideFlags: 0
@@ -3162,7 +3176,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Tiempos
+  m_text: "Tiempo R\xE9cord"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5302535af1044152a457ed104f1f4b91, type: 2}
   m_sharedMaterial: {fileID: 2164040, guid: 5302535af1044152a457ed104f1f4b91, type: 2}
@@ -3521,6 +3535,7 @@ GameObject:
   - component: {fileID: 2121097851}
   - component: {fileID: 2121097853}
   - component: {fileID: 2121097852}
+  - component: {fileID: 2121097854}
   m_Layer: 5
   m_Name: "Men\xFATiempo"
   m_TagString: Untagged
@@ -3588,6 +3603,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2121097850}
   m_CullTransparentMesh: 1
+--- !u!114 &2121097854
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2121097850}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a77d17aa1e213f448a1504e65e58e21d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  textoRecord: {fileID: 70197838}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
