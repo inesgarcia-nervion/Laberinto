@@ -1,38 +1,22 @@
 using UnityEngine;
 
-public class Instanciar : MonoBehaviour
+public static class AudioBootstrapRuntime
 {
-    [Tooltip("Ruta dentro de Resources (ej: Prefabs/SonidoManager)")]
-    [SerializeField] private string prefabPath = "External Files/Resources/Prefabs/SonidoManager";
-
-    void Awake()
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+    private static void Init()
     {
-        // Si ya hay instancia activa, nada que hacer
-        if (SonidoManager.Instance != null) {
-            Debug.Log("[AudioBootstrap] Ya existe SonidoManager en la escena.");
-            return; 
-        }
+        if (SonidoManager.Instance != null) return;
 
-        GameObject prefab = Resources.Load<GameObject>(prefabPath);
+        const string path = "Prefabs/SonidoManager"; // ruta relativa dentro de Assets/Resources
+        GameObject prefab = Resources.Load<GameObject>(path);
         if (prefab == null)
         {
-            Debug.LogWarning($"[AudioBootstrap] Prefab no encontrado en Resources/{prefabPath}");
+            Debug.LogWarning($"[AudioBootstrapRuntime] Prefab no encontrado en Assets/Resources/{path}.prefab");
             return;
         }
 
-        Instantiate(prefab);
-        Debug.Log("[AudioBootstrap] Instanciado SonidoManager desde Resources/" + prefabPath);
-
-        if (SonidoManager.Instance != null)
-        {
-            SonidoManager.Instance.PlayMusic();
-            SonidoManager.Instance.PlayAmbient();
-            Debug.Log("[AudioBootstrap] PlayMusic() y PlayAmbient() llamados.");
-        }
-        else
-        {
-            Debug.LogWarning("[AudioBootstrap] Instanciado pero SonidoManager.Instance sigue siendo null.");
-        }
+        Object.Instantiate(prefab);
+        Debug.Log("[AudioBootstrapRuntime] Instanciado SonidoManager automáticamente desde Resources/" + path);
     }
 }
 
