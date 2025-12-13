@@ -51,6 +51,4 @@ public class MostrarRecord : MonoBehaviour
         textoRecord.text = string.Format("Récord: {0:00}:{1:00}", minutos, segundos);
     }
 
-    // Opcional: Para borrar récords al hacer pruebas
-    // void Update() { if(Input.GetKeyDown(KeyCode.F1)) PlayerPrefs.DeleteAll(); }
 }
