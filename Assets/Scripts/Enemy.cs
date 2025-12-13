@@ -29,6 +29,13 @@ public class EnemyScript : MonoBehaviour
 
     private Player playerScript;
 
+    // --- Nuevos campos para evitar quedarse atascado ---
+    [Header("Evitar atascos")]
+    [SerializeField] private float bumpDuration = 0.25f; // tiempo que se mueve a lo largo de la pared
+    [SerializeField] private float bumpSpeedMultiplier = 1.0f; // multiplicador de velocidad durante bump
+    private float bumpTimer = 0f;
+    private Vector2 bumpDirection = Vector2.zero;
+    // ---------------------------------------------------
 
     void Start()
     {
@@ -152,6 +159,23 @@ public class EnemyScript : MonoBehaviour
     {
         if (playerScript == null || playerScript.dead) return;
 
+        // Si estamos en "bump" (reciente choque con pared), nos movemos a lo largo de bumpDirection
+        if (bumpTimer > 0f)
+        {
+            Vector2 bumpMove = bumpDirection * speed * bumpSpeedMultiplier * Time.fixedDeltaTime;
+            if (CanMove(bumpMove))
+            {
+                rb.MovePosition(rb.position + bumpMove);
+            }
+            else
+            {
+                rb.linearVelocity = Vector2.zero;
+            }
+
+            bumpTimer -= Time.fixedDeltaTime;
+            return;
+        }
+
         Vector3 direccion = player.transform.position - transform.position;
         float distancia = direccion.magnitude;
 
@@ -242,5 +266,25 @@ public class EnemyScript : MonoBehaviour
         }
 
         return true;
+    }
+
+    // Método público llamado por la pared cuando detecta colisión.
+    // 'contactNormal' debe ser la normal de la colisión (desde la pared hacia el enemigo).
+    public void OnWallHit(Vector2 contactNormal)
+    {
+        // Calculamos dos perpendiculares y elegimos la que "apunta" más hacia el jugador
+        Vector2 perp1 = new Vector2(-contactNormal.y, contactNormal.x).normalized;
+        Vector2 perp2 = -perp1;
+
+        Vector2 toPlayer = Vector2.zero;
+        if (player != null)
+        {
+            toPlayer = (player.transform.position - transform.position).normalized;
+        }
+
+        Vector2 chosen = Vector2.Dot(perp1, toPlayer) > Vector2.Dot(perp2, toPlayer) ? perp1 : perp2;
+
+        bumpDirection = chosen;
+        bumpTimer = bumpDuration;
     }
 }
