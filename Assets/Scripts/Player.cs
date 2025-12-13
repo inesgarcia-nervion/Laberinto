@@ -177,6 +177,9 @@ public class Player : MonoBehaviour
         salud -= 1;
         ActualizaHud();
 
+        // Reproducir SFX de ser atacado
+        if (SonidoManager.Instance != null) SonidoManager.Instance.PlayAtacado();
+
         if (salud <= 0)
         {
             salud = 0;

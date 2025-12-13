@@ -159,6 +159,15 @@ public class EnemyScript : MonoBehaviour
                 animator.SetFloat("MoveY", 0f);
             }
         }
+
+        // al detectar que el jugador está en rango de alerta (puede agregarse dentro de Update/FixedUpdate)
+        if (SonidoManager.Instance != null)
+        {
+            if (distancia <= rangoAlerta)
+                SonidoManager.Instance.StartSiren(); // o SetSirenIntensity(...) para control fino
+            else
+                SonidoManager.Instance.StopSiren();
+        }
     }
 
     void FixedUpdate()
