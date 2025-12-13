@@ -7,26 +7,45 @@ public class Timer : MonoBehaviour
     public TextMeshProUGUI timerText;
 
     private float tiempoTranscurrido;
-    private bool cronometroActivo;
+    private bool cronometroActivo = true;
 
     void Start()
     {
-        cronometroActivo = true;
-        tiempoTranscurrido = 0f;
+        // Si existe GameManager persistente, sincronizamos el tiempo inicial
+        if (GameManager.Instance != null)
+        {
+            tiempoTranscurrido = GameManager.Instance.GetElapsedTime();
+            cronometroActivo = true;
+        }
+        else
+        {
+            // Solo si no hay GM (pruebas) empieza de 0
+            tiempoTranscurrido = 0f;
+            cronometroActivo = true;
+        }
     }
 
     void Update()
     {
-        if (cronometroActivo)
+        if (!cronometroActivo) return;
+
+        if (GameManager.Instance != null)
         {
-            tiempoTranscurrido += Time.deltaTime;
-            ActualizarTextoTimer(tiempoTranscurrido);
+            // Fuente de verdad: GameManager
+            tiempoTranscurrido = GameManager.Instance.GetElapsedTime();
         }
+        else
+        {
+            // Fallback local si no hay GameManager
+            tiempoTranscurrido += Time.deltaTime;
+        }
+
+        ActualizarTextoTimer(tiempoTranscurrido);
     }
 
     void ActualizarTextoTimer(float tiempo)
     {
-        tiempo += 1;
+        // Eliminado el +1: mostrará el tiempo real
         float minutos = Mathf.FloorToInt(tiempo / 60);
         float segundos = Mathf.FloorToInt(tiempo % 60);
 
@@ -36,7 +55,6 @@ public class Timer : MonoBehaviour
         }
     }
 
-    // Llamado cuando el jugador recolecta la lámpara
     public void FinalizarNivel()
     {
         if (cronometroActivo)
@@ -48,7 +66,12 @@ public class Timer : MonoBehaviour
 
     void GuardarEnLista()
     {
-        // Recuperamos la lista actual
+        float tiempoAGuardar = tiempoTranscurrido;
+
+        // Si existe GameManager usamos su tiempo por seguridad
+        if (GameManager.Instance != null)
+            tiempoAGuardar = GameManager.Instance.GetElapsedTime();
+
         string tiemposPrevios = PlayerPrefs.GetString("TablaTiempos", "");
 
         if (!string.IsNullOrEmpty(tiemposPrevios))
@@ -56,12 +79,9 @@ public class Timer : MonoBehaviour
             tiemposPrevios += ",";
         }
 
-        // Añadimos el nuevo tiempo al final
-        tiemposPrevios += tiempoTranscurrido.ToString();
+        tiemposPrevios += tiempoAGuardar.ToString();
 
-        // Guardamos la nueva lista completa
         PlayerPrefs.SetString("TablaTiempos", tiemposPrevios);
         PlayerPrefs.Save();
-
     }
 }
