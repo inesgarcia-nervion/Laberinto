@@ -13,9 +13,13 @@ public class EnemyScript : MonoBehaviour
     [SerializeField] private float rangoDetener = 0.5f; // Distancia para detenerse y atacar
     [SerializeField] private float attackCooldown = 1f; // Tiempo entre ataques
 
+    [Header("Colisiones")]
+    [SerializeField] private LayerMask obstacleLayer = ~0; // Ajusta en el Inspector para solo paredes/obstáculos
+
     [Header("Componentes")]
     private Animator animator;
     private Rigidbody2D rb;
+    private Collider2D myCollider;
 
     [Header("Estado Interno")]
     private float ultimoAtaque = 0;
@@ -30,6 +34,7 @@ public class EnemyScript : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
+        myCollider = GetComponent<Collider2D>();
 
         // Guardamos la escala inicial para el Flipping
         initialScaleX = transform.localScale.x;
@@ -154,9 +159,32 @@ public class EnemyScript : MonoBehaviour
         if (distancia <= rangoAlerta && distancia > rangoDetener)
         {
             Vector2 direccionNormalizada = direccion.normalized;
+            Vector2 desiredMove = direccionNormalizada * speed * Time.fixedDeltaTime;
 
-            Vector2 targetPosition = rb.position + direccionNormalizada * speed * Time.fixedDeltaTime;
-            rb.MovePosition(targetPosition);
+            // Intentamos la trayectoria completa; si está bloqueada intentamos eje X o Y por separado
+            if (CanMove(desiredMove))
+            {
+                rb.MovePosition(rb.position + desiredMove);
+            }
+            else
+            {
+                Vector2 moveX = new Vector2(desiredMove.x, 0f);
+                Vector2 moveY = new Vector2(0f, desiredMove.y);
+
+                if (CanMove(moveX))
+                {
+                    rb.MovePosition(rb.position + moveX);
+                }
+                else if (CanMove(moveY))
+                {
+                    rb.MovePosition(rb.position + moveY);
+                }
+                else
+                {
+                    // No se puede mover en ninguna dirección: detener velocidad para evitar "residuo"
+                    rb.linearVelocity = Vector2.zero;
+                }
+            }
         }
         else
         {
@@ -184,5 +212,35 @@ public class EnemyScript : MonoBehaviour
             // Mira a la izquierda
             transform.localScale = new Vector3(-initialScaleX, transform.localScale.y, 1.0f);
         }
+    }
+
+    // Comprueba si se puede desplazar la distancia 'move' sin chocar con obstáculos
+    // Ahora usa Rigidbody2D.Cast, que respeta la forma del collider y evita falsos positivos por solapamiento.
+    private bool CanMove(Vector2 move)
+    {
+        if (move.sqrMagnitude < Mathf.Epsilon) return true;
+
+        float distance = move.magnitude + 0.01f;
+        Vector2 dir = move.normalized;
+
+        // Usamos ContactFilter2D para respetar el obstacleLayer
+        ContactFilter2D filter = new ContactFilter2D();
+        filter.SetLayerMask(obstacleLayer);
+        filter.useTriggers = false;
+
+        RaycastHit2D[] hits = new RaycastHit2D[6];
+        int hitCount = rb.Cast(dir, filter, hits, distance);
+
+        for (int i = 0; i < hitCount; i++)
+        {
+            var col = hits[i].collider;
+            if (col == null) continue;
+            // Ignorar colisiones con el propio Player (si por alguna razón está en la misma capa)
+            if (player != null && col.gameObject == player) continue;
+            // Si cualquier otro collider está en la ruta, no podemos movernos
+            return false;
+        }
+
+        return true;
     }
 }
