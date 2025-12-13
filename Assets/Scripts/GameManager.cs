@@ -1,50 +1,167 @@
-﻿using UnityEngine;
+﻿using System.Linq;
+using UnityEngine;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
-    [Header("UI y Puntuación")]
-    public TMP_Text textoTiempo; 
-    private float tiempoInicio;
+    public static GameManager Instance { get; private set; }
 
-    [Header("Sistema de Fases")]
-    public GameObject[] fases; 
+    [Header("UI")]
+    public TMP_Text textoTiempo;
+    public string timerTag = "Timer";
+
+    [Header("Estado persistente")]
+    public int playerLives = 2;
+
+    [Header("Sistema de Fases (opcional, en la misma escena)")]
+    public GameObject[] fases;
     private int faseActual = 0;
+
+    private float tiempoInicio;
+    private bool inicializado = false;
+
+    void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        Instance = this;
+        DontDestroyOnLoad(gameObject);
+
+        if (!inicializado)
+        {
+            tiempoInicio = Time.time;
+            inicializado = true;
+        }
+
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    void OnDestroy()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
 
     void Start()
     {
-        tiempoInicio = Time.time;
-        // Oculta todas las fases excepto la primera
-        for (int i = 1; i < fases.Length; i++)
+        if (textoTiempo == null)
+            ReasignarTimer();
+
+        if (fases != null && fases.Length > 0)
         {
-            fases[i].SetActive(false);
+            for (int i = 0; i < fases.Length; i++)
+                fases[i].SetActive(i == faseActual);
         }
     }
 
     void Update()
     {
-        // Cronómetro
-        float tiempoTranscurrido = Time.time - tiempoInicio;
-        string t = string.Format("{0:0}:{1:00}", Mathf.Floor(tiempoTranscurrido / 60), Mathf.Floor(tiempoTranscurrido % 60));
-        textoTiempo.text = "Tiempo: " + t;
+        if (textoTiempo != null)
+        {
+            float tiempoTranscurrido = Time.time - tiempoInicio;
+            string t = string.Format("{0:0}:{1:00}", Mathf.Floor(tiempoTranscurrido / 60), Mathf.Floor(tiempoTranscurrido % 60));
+            textoTiempo.text = "Tiempo: " + t;
+        }
     }
 
-    // Llamado por el Player al recoger una lámpara
+    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        if (textoTiempo == null)
+            ReasignarTimer();
+
+        var scenePhases = GameObject.FindGameObjectsWithTag("PhaseRoot");
+        if (scenePhases != null && scenePhases.Length > 0)
+        {
+            fases = scenePhases.OrderBy(g => g.name).ToArray();
+
+            if (faseActual < 0) faseActual = 0;
+            if (faseActual >= fases.Length) faseActual = fases.Length - 1;
+
+            for (int i = 0; i < fases.Length; i++)
+                fases[i].SetActive(i == faseActual);
+        }
+
+        var player = FindObjectOfType<Player>();
+        if (player != null)
+        {
+            player.salud = playerLives;
+            player.ActualizaHud();
+        }
+    }
+
+    void ReasignarTimer()
+    {
+        if (!string.IsNullOrEmpty(timerTag))
+        {
+            var go = GameObject.FindWithTag(timerTag);
+            if (go != null)
+            {
+                var tmp = go.GetComponent<TMP_Text>();
+                if (tmp != null)
+                {
+                    textoTiempo = tmp;
+                    return;
+                }
+            }
+        }
+
+        foreach (var tmp in FindObjectsOfType<TMP_Text>())
+        {
+            if ((tmp.name != null && tmp.name.ToLower().Contains("tiemp")) ||
+                (tmp.text != null && tmp.text.ToLower().Contains("tiemp")))
+            {
+                textoTiempo = tmp;
+                return;
+            }
+        }
+    }
+
+    public float GetElapsedTime()
+    {
+        if (!inicializado) return 0f;
+        return Time.time - tiempoInicio;
+    }
+
+    public void SetPlayerLives(int lives)
+    {
+        playerLives = lives;
+    }
+
+    public void ResetTimer()
+    {
+        tiempoInicio = Time.time;
+    }
+
     public void PasarDeFase()
     {
-        // Desactiva la fase actual
-        fases[faseActual].SetActive(false);
-        faseActual++;
-
-        if (faseActual < fases.Length)
+        if (fases != null && fases.Length > 0)
         {
-            // Activa la siguiente fase
-            fases[faseActual].SetActive(true);
+            if (faseActual >= 0 && faseActual < fases.Length)
+                fases[faseActual].SetActive(false);
+
+            faseActual++;
+
+            if (faseActual < fases.Length)
+            {
+                fases[faseActual].SetActive(true);
+                return;
+            }
+        }
+
+        int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
+        int nextIndex = currentSceneIndex + 1;
+
+        if (nextIndex < SceneManager.sceneCountInBuildSettings)
+        {
+            SceneManager.LoadScene(nextIndex);
         }
         else
         {
-            // Fin del juego y guardar Record
-            Debug.Log("Juego Completado en: " + (Time.time - tiempoInicio));
+            Debug.Log("No hay más escenas en el Build Index. Juego completado.");
         }
     }
 }

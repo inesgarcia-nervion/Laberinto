@@ -4,7 +4,6 @@ using UnityEngine.SceneManagement;
 
 public class Player : MonoBehaviour
 {
-    // ... [Variables de Configuración de Luz y Movimiento] ...
     [Header("Configuración de Luz")]
     public Transform conoDeLuz;
     public float velocidadRotacion = 15f;
@@ -48,10 +47,20 @@ public class Player : MonoBehaviour
         {
             rb.gravityScale = 0f;
             rb.freezeRotation = true;
-            salud = 2; // Vida inicial
 
             puntoDeInicio = transform.position;
-            gameManager = FindObjectOfType<GameManager>();
+
+            if (GameManager.Instance != null)
+            {
+                gameManager = GameManager.Instance; // Conectamos con el GM Maestro
+                salud = gameManager.playerLives;    // Recuperamos las vidas guardadas
+            }
+            else
+            {
+                // Solo entra aquí si probamos la Fase 2 suelta sin pasar por el menú/fase1
+                gameManager = FindObjectOfType<GameManager>();
+                salud = 2;
+            }
 
             timerScript = FindObjectOfType<Timer>();
 
@@ -66,74 +75,44 @@ public class Player : MonoBehaviour
 
     void Update()
     {
-        // -----------------------------------------------------------
-        // 1. INPUT DEL JUGADOR
-        // -----------------------------------------------------------
-        float moveX = Input.GetAxisRaw("Horizontal"); // Raw para la prioridad de animación
+        float moveX = Input.GetAxisRaw("Horizontal");
         float moveY = Input.GetAxisRaw("Vertical");
-        movimiento = new Vector2(moveX, moveY).normalized; // Normalizado para el movimiento físico
+        movimiento = new Vector2(moveX, moveY).normalized;
 
-
-        // -----------------------------------------------------------
-        // 2. LÓGICA DEL ANIMATOR (Priorización de Diagonales)
-        // -----------------------------------------------------------
         if (animator != null)
         {
             bool isMoving = (moveX != 0 || moveY != 0);
-
             animator.SetBool("IsMoving", isMoving);
 
             if (isMoving)
             {
-                // LÓGICA DE PRIORIZACIÓN DE DIAGONALES:
-                // Solo enviamos MoveX o MoveY, anulando el eje menos dominante para evitar el glitch diagonal.
                 if (Mathf.Abs(moveX) > Mathf.Abs(moveY))
                 {
-                    // PRIORIDAD X (Lateral)
                     animator.SetFloat("MoveX", movimiento.x);
                     animator.SetFloat("MoveY", 0f);
                 }
                 else
                 {
-                    // PRIORIDAD Y (Vertical)
                     animator.SetFloat("MoveX", 0f);
                     animator.SetFloat("MoveY", movimiento.y);
                 }
 
-                // c) Guardar la ÚLTIMA dirección (Importante para Idle -> Idle)
-                if (moveX != 0)
-                {
-                    animator.SetFloat("LastMoveX", moveX);
-                }
-                if (moveY != 0)
-                {
-                    animator.SetFloat("LastMoveY", moveY);
-                }
+                if (moveX != 0) animator.SetFloat("LastMoveX", moveX);
+                if (moveY != 0) animator.SetFloat("LastMoveY", moveY);
 
-                // d) Flipping del Sprite para Lateral
                 float SCALE_X = initialScaleX;
                 float SCALE_Y = initialScaleY;
 
-                if (moveX > 0)
-                {
-                    transform.localScale = new Vector3(SCALE_X, SCALE_Y, 1f);
-                }
-                else if (moveX < 0)
-                {
-                    transform.localScale = new Vector3(-SCALE_X, SCALE_Y, 1f);
-                }
+                if (moveX > 0) transform.localScale = new Vector3(SCALE_X, SCALE_Y, 1f);
+                else if (moveX < 0) transform.localScale = new Vector3(-SCALE_X, SCALE_Y, 1f);
             }
-            else // Si isMoving es False (el personaje se detiene)
+            else
             {
-                // Limpieza de los valores de movimiento
                 animator.SetFloat("MoveX", 0f);
                 animator.SetFloat("MoveY", 0f);
             }
         }
 
-        // -----------------------------------------------------------
-        // 3. ROTACIÓN DEL CONO DE LUZ (Rotación suave al moverse)
-        // -----------------------------------------------------------
         if (movimiento != Vector2.zero && conoDeLuz != null)
         {
             float angulo = Mathf.Atan2(movimiento.y, movimiento.x) * Mathf.Rad2Deg;
@@ -143,20 +122,11 @@ public class Player : MonoBehaviour
             conoDeLuz.rotation = Quaternion.Lerp(conoDeLuz.rotation, rotacionObjetivo, Time.deltaTime * velocidadRotacion);
         }
 
-        // -----------------------------------------------------------
-        // 4. POSICIONAMIENTO DEL CONO DE LUZ (Offset trasero)
-        // -----------------------------------------------------------
         if (conoDeLuz != null)
         {
-            // Usamos la dirección local 'up' del cono (vector hacia adelante)
-            // y la invertimos para el offset trasero.
             Vector3 direccionLuz = conoDeLuz.transform.up;
             Vector3 direccionHaciaAtras = -direccionLuz;
-
-            // Posición objetivo = Posición del Player + Vector de Desplazamiento
             Vector3 posicionObjetivo = transform.position + direccionHaciaAtras * offsetDistancia;
-
-            // Aplicar la nueva posición
             conoDeLuz.position = posicionObjetivo;
         }
     }
@@ -165,7 +135,6 @@ public class Player : MonoBehaviour
     {
         if (rb != null)
         {
-            // Movimiento físico basado en el vector normalizado
             rb.MovePosition(rb.position + movimiento * speed * Time.fixedDeltaTime);
         }
     }
@@ -179,6 +148,9 @@ public class Player : MonoBehaviour
 
         // Reproducir SFX de ser atacado
         if (SonidoManager.Instance != null) SonidoManager.Instance.PlayAtacado();
+        // Guardar vidas en GameManager persistente
+        if (gameManager != null)
+            gameManager.playerLives = Mathf.FloorToInt(salud);
 
         if (salud <= 0)
         {
@@ -202,6 +174,10 @@ public class Player : MonoBehaviour
         {
             salud += 1;
             ActualizaHud();
+
+            if (gameManager != null)
+                gameManager.playerLives = Mathf.FloorToInt(salud);
+
             return true;
         }
 
@@ -223,8 +199,21 @@ public class Player : MonoBehaviour
     }
 
 
-    private void ActualizaHud()
+    public void ActualizaHud()
     {
+        if (vidasHud == null)
+        {
+            // Intento de reasignar el HUD de vidas en la escena (heurística por texto/nombre)
+            foreach (var t in FindObjectsOfType<TextMeshProUGUI>())
+            {
+                if (t.text.Contains("Vidas") || t.name.ToLower().Contains("vida") || t.name.ToLower().Contains("vidas"))
+                {
+                    vidasHud = t;
+                    break;
+                }
+            }
+        }
+
         if (vidasHud != null)
         {
             vidasHud.text = "Vidas: " + Mathf.FloorToInt(salud).ToString();

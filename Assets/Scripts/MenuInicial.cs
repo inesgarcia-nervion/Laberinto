@@ -15,6 +15,13 @@ public class MenuInicial : MonoBehaviour
 
     void Start()
     {
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.ResetTimer();      // Pone el tiempo a 0
+            GameManager.Instance.SetPlayerLives(2); // Reinicia las vidas a 3 (o las que quieras)
+                                                    // Y aquí destruyes el GM si quieres uno fresco, o simplemente cargas la escena 1
+        }
+
         if (panelMenuPrincipal != null) panelMenuPrincipal.SetActive(true);
         if (panelTiempos != null) panelTiempos.SetActive(false);
     }
