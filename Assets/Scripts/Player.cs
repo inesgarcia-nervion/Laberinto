@@ -10,11 +10,8 @@ public class Player : MonoBehaviour
     public float velocidadRotacion = 15f;
     public float offsetAngulo = -90f;
 
-    // **********************************************************
-    // AÑADIDO: DISTANCIA DE DESPLAZAMIENTO DEL CONO DE LUZ
     [Header("Configuración de Posición de Luz")]
     public float offsetDistancia = 0.5f;
-    // **********************************************************
 
     [Header("Movimiento y Vidas")]
     public float speed = 5.0f;
@@ -72,29 +69,38 @@ public class Player : MonoBehaviour
         // -----------------------------------------------------------
         // 1. INPUT DEL JUGADOR
         // -----------------------------------------------------------
-        float moveX = Input.GetAxisRaw("Horizontal");
+        float moveX = Input.GetAxisRaw("Horizontal"); // Raw para la prioridad de animación
         float moveY = Input.GetAxisRaw("Vertical");
-        movimiento = new Vector2(moveX, moveY).normalized;
+        movimiento = new Vector2(moveX, moveY).normalized; // Normalizado para el movimiento físico
 
 
         // -----------------------------------------------------------
-        // 2. LÓGICA DEL ANIMATOR
+        // 2. LÓGICA DEL ANIMATOR (Priorización de Diagonales)
         // -----------------------------------------------------------
         if (animator != null)
         {
             bool isMoving = (moveX != 0 || moveY != 0);
 
-            // a) Actualizar Bool principal (Usado para Walk -> Idle)
             animator.SetBool("IsMoving", isMoving);
 
             if (isMoving)
             {
-                // b) Actualizar dirección de movimiento (Usado para Idle -> Walk)
-                animator.SetFloat("MoveX", moveX);
-                animator.SetFloat("MoveY", moveY);
+                // LÓGICA DE PRIORIZACIÓN DE DIAGONALES:
+                // Solo enviamos MoveX o MoveY, anulando el eje menos dominante para evitar el glitch diagonal.
+                if (Mathf.Abs(moveX) > Mathf.Abs(moveY))
+                {
+                    // PRIORIDAD X (Lateral)
+                    animator.SetFloat("MoveX", movimiento.x);
+                    animator.SetFloat("MoveY", 0f);
+                }
+                else
+                {
+                    // PRIORIDAD Y (Vertical)
+                    animator.SetFloat("MoveX", 0f);
+                    animator.SetFloat("MoveY", movimiento.y);
+                }
 
                 // c) Guardar la ÚLTIMA dirección (Importante para Idle -> Idle)
-                // SOLO actualizamos si hay movimiento en ese eje.
                 if (moveX != 0)
                 {
                     animator.SetFloat("LastMoveX", moveX);
@@ -125,9 +131,8 @@ public class Player : MonoBehaviour
             }
         }
 
-
         // -----------------------------------------------------------
-        // 3. ROTACIÓN DEL CONO DE LUZ (Lógica original, solo se rota al moverse)
+        // 3. ROTACIÓN DEL CONO DE LUZ (Rotación suave al moverse)
         // -----------------------------------------------------------
         if (movimiento != Vector2.zero && conoDeLuz != null)
         {
@@ -139,19 +144,13 @@ public class Player : MonoBehaviour
         }
 
         // -----------------------------------------------------------
-        // 4. POSICIONAMIENTO DEL CONO DE LUZ (Cálculo para el offset trasero)
+        // 4. POSICIONAMIENTO DEL CONO DE LUZ (Offset trasero)
         // -----------------------------------------------------------
         if (conoDeLuz != null)
         {
-            // Usamos la dirección local 'up' (eje Y) del cono de luz, 
-            // que suele ser la dirección hacia adelante en muchos sprites 2D, 
-            // y la invertimos para obtener la dirección "atrás".
-
-            // Vector de dirección de la luz (asumiendo que up local apunta hacia adelante)
+            // Usamos la dirección local 'up' del cono (vector hacia adelante)
+            // y la invertimos para el offset trasero.
             Vector3 direccionLuz = conoDeLuz.transform.up;
-
-            // Vector opuesto a donde apunta la luz (dirección "atrás")
-            // Si la luz apunta hacia adelante, la posición objetivo estará detrás.
             Vector3 direccionHaciaAtras = -direccionLuz;
 
             // Posición objetivo = Posición del Player + Vector de Desplazamiento
@@ -166,6 +165,7 @@ public class Player : MonoBehaviour
     {
         if (rb != null)
         {
+            // Movimiento físico basado en el vector normalizado
             rb.MovePosition(rb.position + movimiento * speed * Time.fixedDeltaTime);
         }
     }

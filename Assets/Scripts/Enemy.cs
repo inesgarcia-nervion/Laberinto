@@ -5,10 +5,10 @@ public class EnemyScript : MonoBehaviour
 
     [Header("Referencias")]
     [SerializeField]
-    public GameObject player; 
+    public GameObject player;
 
     [Header("Movimiento y Rangos")]
-    [SerializeField] private float speed = 1f; 
+    [SerializeField] private float speed = 1f;
     [SerializeField] private float rangoAlerta = 3.0f; // Distancia para empezar a perseguir
     [SerializeField] private float rangoDetener = 0.5f; // Distancia para detenerse y atacar
     [SerializeField] private float attackCooldown = 1f; // Tiempo entre ataques
@@ -18,7 +18,10 @@ public class EnemyScript : MonoBehaviour
     private Rigidbody2D rb;
 
     [Header("Estado Interno")]
-    private float ultimoAtaque = 0; 
+    private float ultimoAtaque = 0;
+
+    // Almacena la última dirección de movimiento (para el Flipping)
+    private float initialScaleX;
 
     private Player playerScript;
 
@@ -27,6 +30,9 @@ public class EnemyScript : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
+
+        // Guardamos la escala inicial para el Flipping
+        initialScaleX = transform.localScale.x;
 
         if (player == null)
         {
@@ -52,22 +58,31 @@ public class EnemyScript : MonoBehaviour
     {
         if (playerScript == null || playerScript.dead)
         {
-            if (animator != null) animator.SetBool("running", false);
+            // Si el jugador está muerto o no existe, detenemos la animación.
+            if (animator != null)
+            {
+                animator.SetBool("IsMoving", false);
+            }
             rb.linearVelocity = Vector2.zero;
             return;
         }
 
-        Vector3 direccion = player.transform.position - transform.position;
-        float distancia = direccion.magnitude;
+        Vector3 direccionTotal = player.transform.position - transform.position;
+        float distancia = direccionTotal.magnitude;
 
+        // Dirección de movimiento normalizada (para los parámetros MoveX/Y)
+        Vector2 direccionNormalizada = direccionTotal.normalized;
+
+        // -----------------------------------------------------------
+        // LÓGICA DE DETECCIÓN Y MOVIMIENTO
+        // -----------------------------------------------------------
+        bool isMoving = false; // El estado base
 
         if (distancia <= rangoAlerta)
         {
             if (distancia <= rangoDetener)
             {
-                if (animator != null) animator.SetBool("running", false);
-                rb.linearVelocity = Vector2.zero; 
-
+                // ATACAR: Pararse
                 if (Time.time > ultimoAtaque + attackCooldown)
                 {
                     Pegar();
@@ -76,17 +91,56 @@ public class EnemyScript : MonoBehaviour
             }
             else
             {
-                if (animator != null) animator.SetBool("running", true);
+                // PERSEGUIR: Moverse
+                isMoving = true;
             }
         }
-        else
+
+        // -----------------------------------------------------------
+        // SINCRONIZACIÓN CON EL ANIMATOR (CORRECCIÓN DE DIAGONALES)
+        // -----------------------------------------------------------
+        if (animator != null)
         {
-            // FUERA DE RANGO: Detenerse
-            if (animator != null) animator.SetBool("running", false);
-            rb.linearVelocity = Vector2.zero; 
+            animator.SetBool("IsMoving", isMoving);
+
+            if (isMoving)
+            {
+                // ******************************************************
+                // LÓGICA DE PRIORIZACIÓN DE DIAGONALES (SOLUCIÓN)
+                // ******************************************************
+                if (Mathf.Abs(direccionNormalizada.x) > Mathf.Abs(direccionNormalizada.y))
+                {
+                    // PRIORIDAD X (Lateral)
+                    animator.SetFloat("MoveX", direccionNormalizada.x);
+                    animator.SetFloat("MoveY", 0f); // Anula Y para forzar la animación lateral
+                }
+                else
+                {
+                    // PRIORIDAD Y (Vertical)
+                    animator.SetFloat("MoveX", 0f); // Anula X para forzar la animación vertical
+                    animator.SetFloat("MoveY", direccionNormalizada.y);
+                }
+
+                // 2. Guardar la ÚLTIMA dirección (para Idle)
+                // Se sigue usando la dirección normalizada completa para el Idle
+                if (direccionNormalizada.x != 0)
+                {
+                    animator.SetFloat("LastMoveX", direccionNormalizada.x);
+                }
+                if (direccionNormalizada.y != 0)
+                {
+                    animator.SetFloat("LastMoveY", direccionNormalizada.y);
+                }
+
+                // 3. Flipping del Sprite
+                GirarSprite(direccionNormalizada.x);
+            }
+            else // Si no se está moviendo (Idle/Attack), limpiamos MoveX/Y
+            {
+                animator.SetFloat("MoveX", 0f);
+                animator.SetFloat("MoveY", 0f);
+            }
         }
-        // Girarse hacia el jugador
-        GirarSprite(direccion.x);
     }
 
     void FixedUpdate()
@@ -119,15 +173,16 @@ public class EnemyScript : MonoBehaviour
 
     private void GirarSprite(float direccionX)
     {
+        // Usamos la escala inicial guardada en Start()
         if (direccionX > 0.0f)
         {
             // Mira a la derecha
-            transform.localScale = new Vector3(0.25f, 0.25f, 1.0f);
+            transform.localScale = new Vector3(initialScaleX, transform.localScale.y, 1.0f);
         }
         else if (direccionX < 0.0f)
         {
             // Mira a la izquierda
-            transform.localScale = new Vector3(-0.25f, 0.25f, 1.0f);
+            transform.localScale = new Vector3(-initialScaleX, transform.localScale.y, 1.0f);
         }
     }
 }
