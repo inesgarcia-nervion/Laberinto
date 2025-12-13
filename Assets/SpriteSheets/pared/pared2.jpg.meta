@@ -103,10 +103,10 @@ TextureImporter:
       name: pared2_0
       rect:
         serializedVersion: 2
-        x: 8
-        y: 7
-        width: 135
-        height: 133
+        x: 14
+        y: 8
+        width: 124
+        height: 126
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
