@@ -107,6 +107,11 @@ MonoBehaviour:
   rangoAlerta: 3
   rangoDetener: 0.5
   attackCooldown: 1
+  obstacleLayer:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  bumpDuration: 0.5
+  bumpSpeedMultiplier: 2
 --- !u!50 &7312282144297867997
 Rigidbody2D:
   serializedVersion: 5

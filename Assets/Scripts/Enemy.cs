@@ -31,8 +31,14 @@ public class EnemyScript : MonoBehaviour
 
     // --- Nuevos campos para evitar quedarse atascado ---
     [Header("Evitar atascos")]
+    [Tooltip("Tiempo (s) que el enemigo se desplaza a lo largo de la pared tras chocar.")]
+    [Range(0.05f, 1f)]
     [SerializeField] private float bumpDuration = 0.25f; // tiempo que se mueve a lo largo de la pared
+
+    [Tooltip("Multiplicador de velocidad durante el movimiento lateral (bump).")]
+    [Range(0.5f, 2f)]
     [SerializeField] private float bumpSpeedMultiplier = 1.0f; // multiplicador de velocidad durante bump
+
     private float bumpTimer = 0f;
     private Vector2 bumpDirection = Vector2.zero;
     // ---------------------------------------------------
@@ -286,5 +292,12 @@ public class EnemyScript : MonoBehaviour
 
         bumpDirection = chosen;
         bumpTimer = bumpDuration;
+    }
+
+    // Si quieres cambiar los parámetros en tiempo de ejecución desde otro script:
+    public void SetBumpParameters(float duration, float speedMultiplier)
+    {
+        bumpDuration = duration;
+        bumpSpeedMultiplier = speedMultiplier;
     }
 }
