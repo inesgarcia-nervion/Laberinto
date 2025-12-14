@@ -94,6 +94,7 @@ public class GameManager : MonoBehaviour
 
     void ReasignarTimer()
     {
+        textoTiempo = null;
         // Intenta encontrar el texto del temporizador por Tag
         if (!string.IsNullOrEmpty(timerTag))
         {
@@ -104,19 +105,7 @@ public class GameManager : MonoBehaviour
                 if (tmp != null)
                 {
                     textoTiempo = tmp;
-                    return;
                 }
-            }
-        }
-
-        // Si falla, busca por tipo usando el método moderno
-        foreach (var tmp in Object.FindObjectsByType<TMP_Text>(FindObjectsSortMode.None))
-        {
-            if ((tmp.name != null && tmp.name.ToLower().Contains("tiemp")) ||
-                (tmp.text != null && tmp.text.ToLower().Contains("tiemp")))
-            {
-                textoTiempo = tmp;
-                return;
             }
         }
     }

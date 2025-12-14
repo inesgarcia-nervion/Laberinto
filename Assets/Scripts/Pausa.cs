@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Pausa : MonoBehaviour
 {
@@ -22,5 +23,12 @@ public class Pausa : MonoBehaviour
             }
         }
     }
-    
+
+    public void VolverAlMenu()
+    {
+        Time.timeScale = 1f;
+
+        SceneManager.LoadScene("Menú");
+    }
+
 }

@@ -18,8 +18,12 @@ public class MenuInicial : MonoBehaviour
         // Reinicia datos del juego si hay una instancia previa del GM
         if (GameManager.Instance != null)
         {
-            GameManager.Instance.ReiniciarTemporizador();
             GameManager.Instance.EstablecerVidasJugador(2);
+        }
+
+        if (SonidoManager.Instance != null)
+        {
+            SonidoManager.Instance.DetenerSirena();
         }
 
         if (panelMenuPrincipal != null) panelMenuPrincipal.SetActive(true);
@@ -28,13 +32,17 @@ public class MenuInicial : MonoBehaviour
 
     public void Jugar()
     {
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.ReiniciarTemporizador();
+        }
+
         Time.timeScale = 1f;
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
     }
 
     public void Salir()
     {
-        Debug.Log("Salir del juego");
         Application.Quit();
     }
 

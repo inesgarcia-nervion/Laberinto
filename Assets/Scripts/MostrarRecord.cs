@@ -14,6 +14,11 @@ public class MostrarRecord : MonoBehaviour
 
     void MostrarMejorTiempo()
     {
+        if (textoRecord == null)
+        {
+            return;
+        }
+
         // Recupera la lista de tiempos guardados
         string tiemposString = PlayerPrefs.GetString("TablaTiempos", "");
 
