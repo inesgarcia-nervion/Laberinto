@@ -1,11 +1,11 @@
 using UnityEngine;
 using TMPro;
-using System.Linq; // Necesario para ordenar la lista
+using System.Linq;
 using System.Collections.Generic;
 
 public class MostrarRecord : MonoBehaviour
 {
-    public TextMeshProUGUI textoRecord;
+    public TextMeshProUGUI textoRecord; // UI para el mejor tiempo
 
     void Start()
     {
@@ -14,7 +14,7 @@ public class MostrarRecord : MonoBehaviour
 
     void MostrarMejorTiempo()
     {
-        // 1. Recuperamos la cadena guardada (ej: "120.5,300,45.2")
+        // Recupera la lista de tiempos guardados
         string tiemposString = PlayerPrefs.GetString("TablaTiempos", "");
 
         if (string.IsNullOrEmpty(tiemposString))
@@ -23,7 +23,7 @@ public class MostrarRecord : MonoBehaviour
             return;
         }
 
-        // 2. Convertimos el string a una lista de números
+        // Convierte el string guardado en una lista numérica
         string[] arrayTiempos = tiemposString.Split(',');
         List<float> listaTiempos = new List<float>();
 
@@ -41,10 +41,10 @@ public class MostrarRecord : MonoBehaviour
             return;
         }
 
-        // 3. Buscamos el menor tiempo (el mejor)
+        // Encuentra el tiempo mínimo (récord)
         float mejorTiempo = Mathf.Min(listaTiempos.ToArray());
 
-        // 4. Formateamos y mostramos
+        // Formatea y muestra el resultado
         float minutos = Mathf.FloorToInt(mejorTiempo / 60);
         float segundos = Mathf.FloorToInt(mejorTiempo % 60);
 

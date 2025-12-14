@@ -5,30 +5,30 @@ using UnityEngine.SceneManagement;
 public class Player : MonoBehaviour
 {
     [Header("Configuración de Luz")]
-    public Transform conoDeLuz;
-    public float velocidadRotacion = 15f;
-    public float offsetAngulo = -90f;
+    public Transform conoDeLuz; // Objeto visual de la linterna
+    public float velocidadRotacion = 15f; // Velocidad de giro de la luz
+    public float offsetAngulo = -90f; // Ajuste del ángulo de la luz
 
     [Header("Configuración de Posición de Luz")]
-    public float offsetDistancia = 0.5f;
+    public float offsetDistancia = 0.5f; // Distancia de la luz respecto al jugador
 
     [Header("Movimiento y Vidas")]
-    public float speed = 5.0f;
+    public float speed = 5.0f; // Velocidad de movimiento
     private Rigidbody2D rb;
-    private Vector2 movimiento;
+    private Vector2 movimiento; // Vector de dirección actual
 
-    // VARIABLES DEL ANIMATOR
+    // Referencia al componente de animaciones
     private Animator animator;
 
-    // VARIABLES AÑADIDAS PARA CORREGIR LA ESCALA AL HACER FLIPPING
+    // Escala inicial para gestionar el volteo del sprite
     private float initialScaleX;
     private float initialScaleY;
 
-    public float salud;
-    public bool dead = false;
-    public TextMeshProUGUI vidasHud;
+    public float salud; // Vidas actuales
+    public bool dead = false; // Estado de muerte
+    public TextMeshProUGUI vidasHud; // Texto UI de vidas
 
-    private Vector3 puntoDeInicio;
+    private Vector3 puntoDeInicio; // Posición de respawn
     private GameManager gameManager;
 
     private Timer timerScript;
@@ -39,7 +39,7 @@ public class Player : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
 
-        // GUARDA LA ESCALA DE DISEÑO AL INICIO
+        // Guarda la escala original
         initialScaleX = transform.localScale.x;
         initialScaleY = transform.localScale.y;
 
@@ -50,19 +50,21 @@ public class Player : MonoBehaviour
 
             puntoDeInicio = transform.position;
 
+            // Sincroniza vidas con el GameManager
             if (GameManager.Instance != null)
             {
-                gameManager = GameManager.Instance; // Conectamos con el GM Maestro
-                salud = gameManager.playerLives;    // Recuperamos las vidas guardadas
+                gameManager = GameManager.Instance;
+                salud = gameManager.playerLives;
             }
             else
             {
-                // Solo entra aquí si probamos la Fase 2 suelta sin pasar por el menú/fase1
-                gameManager = FindObjectOfType<GameManager>();
+                // Busca el GM usando el método nuevo
+                gameManager = Object.FindFirstObjectByType<GameManager>();
                 salud = 2;
             }
 
-            timerScript = FindObjectOfType<Timer>();
+            // Busca el Timer usando el método nuevo
+            timerScript = Object.FindFirstObjectByType<Timer>();
 
             ActualizaHud();
         }
@@ -75,10 +77,15 @@ public class Player : MonoBehaviour
 
     void Update()
     {
+        // No procesa input si el juego está congelado
+        if (Time.timeScale == 0f) return;
+
+        // Captura input de movimiento
         float moveX = Input.GetAxisRaw("Horizontal");
         float moveY = Input.GetAxisRaw("Vertical");
         movimiento = new Vector2(moveX, moveY).normalized;
 
+        // Gestión de animaciones de movimiento
         if (animator != null)
         {
             bool isMoving = (moveX != 0 || moveY != 0);
@@ -100,6 +107,7 @@ public class Player : MonoBehaviour
                 if (moveX != 0) animator.SetFloat("LastMoveX", moveX);
                 if (moveY != 0) animator.SetFloat("LastMoveY", moveY);
 
+                // Volteo del sprite según dirección X
                 float SCALE_X = initialScaleX;
                 float SCALE_Y = initialScaleY;
 
@@ -113,6 +121,7 @@ public class Player : MonoBehaviour
             }
         }
 
+        // Rotación de la linterna según movimiento
         if (movimiento != Vector2.zero && conoDeLuz != null)
         {
             float angulo = Mathf.Atan2(movimiento.y, movimiento.x) * Mathf.Rad2Deg;
@@ -122,6 +131,7 @@ public class Player : MonoBehaviour
             conoDeLuz.rotation = Quaternion.Lerp(conoDeLuz.rotation, rotacionObjetivo, Time.deltaTime * velocidadRotacion);
         }
 
+        // Posicionamiento de la linterna
         if (conoDeLuz != null)
         {
             Vector3 direccionLuz = conoDeLuz.transform.up;
@@ -133,22 +143,23 @@ public class Player : MonoBehaviour
 
     void FixedUpdate()
     {
+        // Aplicación física del movimiento
         if (rb != null)
         {
             rb.MovePosition(rb.position + movimiento * speed * Time.fixedDeltaTime);
         }
     }
 
-    public void Hit()
+    public void RecibirGolpe()
     {
         if (dead) return;
 
         salud -= 1;
         ActualizaHud();
 
-        // Reproducir SFX de ser atacado
-        if (SonidoManager.Instance != null) SonidoManager.Instance.PlayAtacado();
-        // Guardar vidas en GameManager persistente
+        // Reproduce sonido de daño y guarda vidas en GameManager
+        if (SonidoManager.Instance != null) SonidoManager.Instance.ReproducirAtacado();
+
         if (gameManager != null)
             gameManager.playerLives = Mathf.FloorToInt(salud);
 
@@ -170,6 +181,7 @@ public class Player : MonoBehaviour
     {
         float maximoDeVidas = 3f;
 
+        // Añade vida si no está al máximo y actualiza HUD
         if (salud < maximoDeVidas)
         {
             salud += 1;
@@ -201,10 +213,11 @@ public class Player : MonoBehaviour
 
     public void ActualizaHud()
     {
+        // Busca el texto de vidas si se ha perdido la referencia
         if (vidasHud == null)
         {
-            // Intento de reasignar el HUD de vidas en la escena (heurística por texto/nombre)
-            foreach (var t in FindObjectsOfType<TextMeshProUGUI>())
+            // Usamos FindObjectsByType para buscar en la escena de forma moderna
+            foreach (var t in Object.FindObjectsByType<TextMeshProUGUI>(FindObjectsSortMode.None))
             {
                 if (t.text.Contains("Vidas") || t.name.ToLower().Contains("vida") || t.name.ToLower().Contains("vidas"))
                 {

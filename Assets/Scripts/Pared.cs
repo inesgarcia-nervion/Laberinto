@@ -3,10 +3,11 @@ using UnityEngine;
 public class Pared : MonoBehaviour
 {
     [Header("Ajustes")]
-    [SerializeField] private bool enforceLayerNamedPared = true;
+    [SerializeField] private bool enforceLayerNamedPared = true; // Fuerza la capa "Pared"
 
     void OnValidate()
     {
+        // Asigna la capa automáticamente en el editor
         if (enforceLayerNamedPared)
         {
             int layer = LayerMask.NameToLayer("Pared");
@@ -19,7 +20,7 @@ public class Pared : MonoBehaviour
 
     void Awake()
     {
-        // Comprobación opcional: avisar si falta collider
+        // Advierte si falta el Collider
         if (GetComponent<Collider2D>() == null)
         {
             Debug.LogWarning($"[Pared] '{name}' no tiene Collider2D. Añade uno para que funcione como muro.", this);
@@ -28,17 +29,14 @@ public class Pared : MonoBehaviour
 
     void OnCollisionEnter2D(Collision2D collision)
     {
-        // Intentamos notificar al EnemyScript si existe
+        // Notifica al enemigo que ha chocado con la pared
         if (collision.gameObject.TryGetComponent<EnemyScript>(out var enemy))
         {
             Vector2 normal = Vector2.zero;
             if (collision.contacts != null && collision.contacts.Length > 0)
             {
-                // contact.normal es la normal del contacto (apunta desde el otro collider hacia este)
+                // Calcula la normal para el rebote
                 normal = collision.contacts[0].normal;
-                // Queremos la normal desde la pared hacia el enemigo -> invertir si es necesario
-                // Si la normal apunta desde enemy hacia wall, invertimos para que sea wall->enemy.
-                // Comprobamos aproximación simple: si la normal apunta hacia el centro del enemigo, lo usamos.
                 Vector2 toEnemy = (enemy.transform.position - transform.position).normalized;
                 if (Vector2.Dot(normal, toEnemy) < 0f)
                 {
@@ -50,17 +48,17 @@ public class Pared : MonoBehaviour
                 normal = (enemy.transform.position - transform.position).normalized;
             }
 
-            enemy.OnWallHit(normal);
+            enemy.AlGolpearPared(normal);
         }
     }
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        // Si la pared es trigger, calculamos normal aproximada
+        // Si es trigger, también notifica al enemigo
         if (other.gameObject.TryGetComponent<EnemyScript>(out var enemy))
         {
             Vector2 normal = (enemy.transform.position - transform.position).normalized;
-            enemy.OnWallHit(normal);
+            enemy.AlGolpearPared(normal);
         }
     }
 }

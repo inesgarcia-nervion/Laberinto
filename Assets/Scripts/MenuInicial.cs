@@ -7,19 +7,19 @@ using System.Linq;
 public class MenuInicial : MonoBehaviour
 {
     [Header("UI - Paneles")]
-    public GameObject panelMenuPrincipal; 
-    public GameObject panelTiempos;      
+    public GameObject panelMenuPrincipal;
+    public GameObject panelTiempos;
 
     [Header("UI - Texto")]
-    public TextMeshProUGUI textoParaMostrarRecords; 
+    public TextMeshProUGUI textoParaMostrarRecords;
 
     void Start()
     {
+        // Reinicia datos del juego si hay una instancia previa del GM
         if (GameManager.Instance != null)
         {
-            GameManager.Instance.ResetTimer();      // Pone el tiempo a 0
-            GameManager.Instance.SetPlayerLives(2); // Reinicia las vidas a 3 (o las que quieras)
-                                                    // Y aquí destruyes el GM si quieres uno fresco, o simplemente cargas la escena 1
+            GameManager.Instance.ReiniciarTemporizador();
+            GameManager.Instance.EstablecerVidasJugador(2);
         }
 
         if (panelMenuPrincipal != null) panelMenuPrincipal.SetActive(true);
@@ -40,20 +40,20 @@ public class MenuInicial : MonoBehaviour
 
     public void AbrirMenuTiempos()
     {
-        panelMenuPrincipal.SetActive(false); // Oculta menú principal
-        panelTiempos.SetActive(true);        // Muestra menú tiempos
+        panelMenuPrincipal.SetActive(false);
+        panelTiempos.SetActive(true);
 
-        MostrarTiemposLogic(); 
+        LogicaMostrarTiempos();
     }
 
     public void VolverAlMenu()
     {
-        panelTiempos.SetActive(false);       // Oculta menú tiempos
-        panelMenuPrincipal.SetActive(true);  // Muestra menú principal
+        panelTiempos.SetActive(false);
+        panelMenuPrincipal.SetActive(true);
     }
 
-    // Lógica interna para escribir los tiempos
-    void MostrarTiemposLogic()
+    // Lee y formatea la lista de récords guardada
+    void LogicaMostrarTiempos()
     {
         string data = PlayerPrefs.GetString("TablaTiempos", "");
 
@@ -74,10 +74,10 @@ public class MenuInicial : MonoBehaviour
             }
         }
 
-        listaTiempos.Sort(); // Ordenar menor a mayor
+        listaTiempos.Sort(); // Ordena los tiempos de menor a mayor
 
         string textoFinal = "";
-        int cantidad = Mathf.Min(listaTiempos.Count, 5); // Máximo 5 récords
+        int cantidad = Mathf.Min(listaTiempos.Count, 5); // Muestra solo los top 5
 
         for (int i = 0; i < cantidad; i++)
         {
@@ -92,7 +92,7 @@ public class MenuInicial : MonoBehaviour
 
     string FormatearTiempo(float tiempo)
     {
-        tiempo += 1;
+        tiempo += 1; // Ajuste visual opcional
         float min = Mathf.FloorToInt(tiempo / 60);
         float seg = Mathf.FloorToInt(tiempo % 60);
         return string.Format("{0:00}:{1:00}", min, seg);

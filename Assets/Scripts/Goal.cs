@@ -2,14 +2,14 @@ using UnityEngine;
 
 public class Goal : MonoBehaviour
 {
-    private bool playerInRange = false;
+    private bool playerInRange = false; // Detecta si el jugador está en la zona
 
     // Update is called once per frame
     void Update()
     {
         if (playerInRange && Input.GetKeyDown(KeyCode.E))
         {
-            LoadNextScene();
+            CargarSiguienteEscena();
         }
     }
 
@@ -29,11 +29,10 @@ public class Goal : MonoBehaviour
         }
     }
 
-    void LoadNextScene()
+    void CargarSiguienteEscena()
     {
-      // Aquí puedes agregar efectos visuales o de sonido antes de cambiar de escena
-      // Cargar la siguiente escena en el orden de construcción
-      int currentSceneIndex = UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex;
-      UnityEngine.SceneManagement.SceneManager.LoadScene(currentSceneIndex + 1);
+        // Carga la siguiente escena según el índice del Build Settings
+        int currentSceneIndex = UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex;
+        UnityEngine.SceneManagement.SceneManager.LoadScene(currentSceneIndex + 1);
     }
 }

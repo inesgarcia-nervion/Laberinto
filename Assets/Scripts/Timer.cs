@@ -4,22 +4,21 @@ using TMPro;
 public class Timer : MonoBehaviour
 {
     [Header("UI")]
-    public TextMeshProUGUI timerText;
+    public TextMeshProUGUI timerText; // Texto en pantalla del cronómetro
 
-    private float tiempoTranscurrido;
-    private bool cronometroActivo = true;
+    private float tiempoTranscurrido; // Tiempo en segundos
+    private bool cronometroActivo = true; // Controla si el tiempo corre o para
 
     void Start()
     {
-        // Si existe GameManager persistente, sincronizamos el tiempo inicial
+        // Sincroniza el tiempo con el GameManager si existe, o inicia en 0
         if (GameManager.Instance != null)
         {
-            tiempoTranscurrido = GameManager.Instance.GetElapsedTime();
+            tiempoTranscurrido = GameManager.Instance.ObtenerTiempoTranscurrido();
             cronometroActivo = true;
         }
         else
         {
-            // Solo si no hay GM (pruebas) empieza de 0
             tiempoTranscurrido = 0f;
             cronometroActivo = true;
         }
@@ -29,14 +28,13 @@ public class Timer : MonoBehaviour
     {
         if (!cronometroActivo) return;
 
+        // Usa el GameManager como fuente principal de tiempo si está disponible
         if (GameManager.Instance != null)
         {
-            // Fuente de verdad: GameManager
-            tiempoTranscurrido = GameManager.Instance.GetElapsedTime();
+            tiempoTranscurrido = GameManager.Instance.ObtenerTiempoTranscurrido();
         }
         else
         {
-            // Fallback local si no hay GameManager
             tiempoTranscurrido += Time.deltaTime;
         }
 
@@ -45,7 +43,7 @@ public class Timer : MonoBehaviour
 
     void ActualizarTextoTimer(float tiempo)
     {
-        // Eliminado el +1: mostrará el tiempo real
+        // Convierte el tiempo a formato MM:SS
         float minutos = Mathf.FloorToInt(tiempo / 60);
         float segundos = Mathf.FloorToInt(tiempo % 60);
 
@@ -68,10 +66,11 @@ public class Timer : MonoBehaviour
     {
         float tiempoAGuardar = tiempoTranscurrido;
 
-        // Si existe GameManager usamos su tiempo por seguridad
+        // Asegura obtener el tiempo correcto del GameManager
         if (GameManager.Instance != null)
-            tiempoAGuardar = GameManager.Instance.GetElapsedTime();
+            tiempoAGuardar = GameManager.Instance.ObtenerTiempoTranscurrido();
 
+        // Recupera tiempos guardados, añade el nuevo y guarda
         string tiemposPrevios = PlayerPrefs.GetString("TablaTiempos", "");
 
         if (!string.IsNullOrEmpty(tiemposPrevios))

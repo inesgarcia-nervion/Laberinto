@@ -7,27 +7,28 @@ public class SonidoManager : MonoBehaviour
     public static SonidoManager Instance { get; private set; }
 
     [Header("Clips")]
-    [SerializeField] private AudioClip atacadoClip;
-    [SerializeField] private AudioClip pasosEnemigoClip;
-    [SerializeField] private AudioClip sirenaClip;
-    [SerializeField] private AudioClip ruidoExtrañoClip;
-    [SerializeField] private AudioClip mazmorraThemeClip;
+    [SerializeField] private AudioClip atacadoClip; // Sonido al ser golpeado
+    [SerializeField] private AudioClip pasosEnemigoClip; // Sonido de pasos del enemigo
+    [SerializeField] private AudioClip sirenaClip; // Sonido de alerta/persecución
+    [SerializeField] private AudioClip ruidoExtrañoClip; // Sonido ambiental de fondo
+    [SerializeField] private AudioClip mazmorraThemeClip; // Música principal
 
+    // Controla el volumen de los diferentes tipos de audio
     [Header("Volúmenes")]
-    [Range(0f, 1f)] public float musicVolume = 0.6f;
-    [Range(0f, 1f)] public float ambientVolume = 0.5f;
-    [Range(0f, 1f)] public float sfxVolume = 1f;
-    [Range(0f, 1f)] public float sirenMaxVolume = 0.9f;
+    [Range(0f, 1f)] public float musicVolume = 0.6f; 
+    [Range(0f, 1f)] public float ambientVolume = 0.5f; 
+    [Range(0f, 1f)] public float sfxVolume = 1f; 
+    [Range(0f, 1f)] public float sirenMaxVolume = 0.9f; 
     [Tooltip("Tiempo de fade para sirena/música (segundos)")]
-    public float fadeTime = 0.25f;
+    public float fadeTime = 0.25f; // Tiempo de transición de volumen
 
-    // Fuentes principales
+    // Fuentes de audio principales
     private AudioSource musicSource;
     private AudioSource ambientSource;
     private AudioSource sirenSource;
     private AudioSource sfxSource;
 
-    // Footsteps por enemigo (AudioSource creado en el GameObject del enemigo)
+    // Diccionario para gestionar los pasos de cada enemigo individualmente
     private readonly Dictionary<GameObject, AudioSource> footstepSources = new Dictionary<GameObject, AudioSource>();
 
     private Coroutine sirenFadeCoroutine;
@@ -35,71 +36,70 @@ public class SonidoManager : MonoBehaviour
 
     private void Awake()
     {
-        // Si ya existe un singleton distinto, transferimos ajustes útiles y destruimos esta instancia.
+        // Gestión del patrón Singleton: destruye duplicados
         if (Instance != null && Instance != this)
         {
-            Instance.MergeInspectorSettings(this);
+            Instance.FusionarAjustesInspector(this);
             Destroy(gameObject);
             return;
         }
 
-        // Primera (y única) instancia
         Instance = this;
         DontDestroyOnLoad(gameObject);
 
-        // Crear AudioSources base sólo una vez
-        CreateAudioSourcesIfNeeded();
+        // Inicializa los AudioSources necesarios
+        CrearFuentesSiEsNecesario();
 
-        // Si la música no está sonando, arrancarla (no reiniciará si ya está sonando)
-        if (musicSource.clip != null) PlayMusic();
-        if (ambientSource.clip != null) PlayAmbient();
+        // Inicia música y ambiente si no están sonando
+        if (musicSource.clip != null) ReproducirMusica();
+        if (ambientSource.clip != null) ReproducirAmbiente();
     }
 
-    // Si una nueva instancia aparece en otra escena, copiamos los clips/volúmenes que el diseñador haya configurado
-    // sin reiniciar la reproducción actual.
-    private void MergeInspectorSettings(SonidoManager other)
+    // Copia la configuración de una nueva instancia a la actual sin cortar el audio
+    private void FusionarAjustesInspector(SonidoManager other)
     {
         if (other == null) return;
 
-        // Copiar clips si el singleton no los tiene (o si quieres forzar, cambia la lógica)
+        // Asigna clips si faltan en la instancia actual
         if (other.atacadoClip != null) this.atacadoClip = other.atacadoClip;
         if (other.pasosEnemigoClip != null) this.pasosEnemigoClip = other.pasosEnemigoClip;
         if (other.sirenaClip != null) this.sirenaClip = other.sirenaClip;
         if (other.ruidoExtrañoClip != null) this.ruidoExtrañoClip = other.ruidoExtrañoClip;
 
-        // Si el singleton no tiene tema asignado pero el nuevo sí, asignarlo (sin tocar reproducción si ya suena)
+        // Si cambia el tema musical, lo actualiza
         if (this.mazmorraThemeClip == null && other.mazmorraThemeClip != null)
         {
             this.mazmorraThemeClip = other.mazmorraThemeClip;
             if (musicSource != null) musicSource.clip = this.mazmorraThemeClip;
         }
 
-        // Copiar volúmenes/ajustes menores
+        // Copia los valores de volumen y tiempo de transición
         this.musicVolume = other.musicVolume;
         this.ambientVolume = other.ambientVolume;
         this.sfxVolume = other.sfxVolume;
         this.sirenMaxVolume = other.sirenMaxVolume;
         this.fadeTime = other.fadeTime;
 
-        // Actualizar volúmenes de fuentes ya existentes (sin pausar la música)
+        // Actualiza el volumen de las fuentes activas
         if (musicSource != null) musicSource.volume = Mathf.Clamp01(musicSource.volume) * Mathf.Clamp01(musicVolume);
         if (ambientSource != null) ambientSource.volume = ambientVolume;
         if (sfxSource != null) sfxSource.volume = sfxVolume;
         if (sirenSource != null) sirenSource.clip = sirenaClip;
     }
 
-    private void CreateAudioSourcesIfNeeded()
+    // Crea los componentes AudioSource hijos si no existen
+    private void CrearFuentesSiEsNecesario()
     {
-        // Evitar recrear si ya existen (por ejemplo tras pasar por Awake anterior)
         if (musicSource != null) return;
 
-        musicSource = CreateChildAudioSource("MusicSource", true, false, mazmorraThemeClip, musicVolume);
-        ambientSource = CreateChildAudioSource("AmbientSource", true, false, ruidoExtrañoClip, ambientVolume);
-        sirenSource = CreateChildAudioSource("SirenSource", true, false, sirenaClip, 0f);
-        sfxSource = CreateChildAudioSource("SfxSource", false, false, null, sfxVolume);
+        musicSource = CrearFuenteHija("MusicSource", true, false, mazmorraThemeClip, musicVolume);
+        ambientSource = CrearFuenteHija("AmbientSource", true, false, ruidoExtrañoClip, ambientVolume);
+        sirenSource = CrearFuenteHija("SirenSource", true, false, sirenaClip, 0f);
+        sfxSource = CrearFuenteHija("SfxSource", false, false, null, sfxVolume);
     }
 
-    private AudioSource CreateChildAudioSource(string name, bool loop, bool playOnAwake, AudioClip clip, float vol)
+    // Método auxiliar para instanciar un GameObject con AudioSource
+    private AudioSource CrearFuenteHija(string name, bool loop, bool playOnAwake, AudioClip clip, float vol)
     {
         GameObject go = new GameObject(name);
         go.transform.SetParent(transform);
@@ -108,30 +108,30 @@ public class SonidoManager : MonoBehaviour
         src.playOnAwake = playOnAwake;
         src.clip = clip;
         src.volume = vol;
-        src.spatialBlend = 0f; // 2D
+        src.spatialBlend = 0f; // Sonido 2D
         return src;
     }
 
-    // ---------- Música y ambiente ----------
-    public void PlayMusic()
+    // Música y ambiente 
+
+    public void ReproducirMusica()
     {
         if (musicSource == null || musicSource.clip == null) return;
-        // Si ya está sonando, no reiniciar
         if (musicSource.isPlaying) return;
 
         musicSource.volume = 0f;
         musicSource.Play();
         if (musicFadeCoroutine != null) StopCoroutine(musicFadeCoroutine);
-        musicFadeCoroutine = StartCoroutine(FadeAudio(musicSource, musicVolume, fadeTime));
+        musicFadeCoroutine = StartCoroutine(RealizarFadeAudio(musicSource, musicVolume, fadeTime));
     }
 
-    public void StopMusic(bool fade = true)
+    public void DetenerMusica(bool fade = true)
     {
         if (musicSource == null) return;
         if (fade)
         {
             if (musicFadeCoroutine != null) StopCoroutine(musicFadeCoroutine);
-            musicFadeCoroutine = StartCoroutine(FadeAudio(musicSource, 0f, fadeTime, stopAtEnd: true));
+            musicFadeCoroutine = StartCoroutine(RealizarFadeAudio(musicSource, 0f, fadeTime, stopAtEnd: true));
         }
         else
         {
@@ -139,7 +139,7 @@ public class SonidoManager : MonoBehaviour
         }
     }
 
-    public void PlayAmbient()
+    public void ReproducirAmbiente()
     {
         if (ambientSource == null || ambientSource.clip == null) return;
         if (!ambientSource.isPlaying)
@@ -149,43 +149,47 @@ public class SonidoManager : MonoBehaviour
         }
     }
 
-    public void StopAmbient()
+    public void DetenerAmbiente()
     {
         if (ambientSource == null) return;
         ambientSource.Stop();
     }
 
-    // ---------- SFX one-shot ----------
-    public void PlayOneShotAtSfx(AudioClip clip, float volumeScale = 1f)
+    // SFX one-shot 
+
+    // Reproduce un sonido una sola vez
+    public void ReproducirUnDisparoSFX(AudioClip clip, float volumeScale = 1f)
     {
         if (clip == null || sfxSource == null) return;
         sfxSource.PlayOneShot(clip, sfxVolume * volumeScale);
     }
 
-    // Conveniencia por nombre (usa los clips asignados en el Inspector)
-    public void PlayAtacado() => PlayOneShotAtSfx(atacadoClip);
-    public void PlayRuidoExtraño() => PlayOneShotAtSfx(ruidoExtrañoClip);
+    public void ReproducirAtacado() => ReproducirUnDisparoSFX(atacadoClip);
+    public void ReproducirRuidoExtraño() => ReproducirUnDisparoSFX(ruidoExtrañoClip);
 
-    // ---------- Sirena ----------
-    public void StartSiren(float targetVolume = -1f)
+    // Sirena
+
+    // Inicia el sonido de sirena con fade in
+    public void IniciarSirena(float targetVolume = -1f)
     {
         if (sirenSource == null || sirenSource.clip == null) return;
         if (targetVolume < 0f) targetVolume = sirenMaxVolume;
         sirenSource.volume = Mathf.Max(sirenSource.volume, 0f);
         if (!sirenSource.isPlaying) sirenSource.Play();
         if (sirenFadeCoroutine != null) StopCoroutine(sirenFadeCoroutine);
-        sirenFadeCoroutine = StartCoroutine(FadeAudio(sirenSource, targetVolume, fadeTime));
+        sirenFadeCoroutine = StartCoroutine(RealizarFadeAudio(sirenSource, targetVolume, fadeTime));
     }
 
-    public void StopSiren()
+    // Detiene la sirena con fade out
+    public void DetenerSirena()
     {
         if (sirenSource == null) return;
         if (sirenFadeCoroutine != null) StopCoroutine(sirenFadeCoroutine);
-        sirenFadeCoroutine = StartCoroutine(FadeAudio(sirenSource, 0f, fadeTime, stopAtEnd: true));
+        sirenFadeCoroutine = StartCoroutine(RealizarFadeAudio(sirenSource, 0f, fadeTime, stopAtEnd: true));
     }
 
-    // Ajusta intensidad 0..1 (volumen relativo a sirenMaxVolume)
-    public void SetSirenIntensity(float normalized)
+    // Controla el volumen de la sirena manualmente (0 a 1)
+    public void EstablecerIntensidadSirena(float normalized)
     {
         if (sirenSource == null) return;
         float vol = Mathf.Clamp01(normalized) * sirenMaxVolume;
@@ -194,9 +198,10 @@ public class SonidoManager : MonoBehaviour
         if (vol == 0f && sirenSource.isPlaying) sirenSource.Stop();
     }
 
-    // ---------- Pasos de enemigo (loop por enemigo) ----------
-    // Crea/activa una fuente de audio en el enemigo para reproducir pasos en loop
-    public void PlayEnemyFootsteps(GameObject enemy)
+    // Pasos de enemigo (loop por enemigo)
+
+    // Asigna y reproduce sonido de pasos en un enemigo específico
+    public void ReproducirPasosEnemigo(GameObject enemy)
     {
         if (enemy == null || pasosEnemigoClip == null) return;
         if (!footstepSources.TryGetValue(enemy, out var src) || src == null)
@@ -212,7 +217,7 @@ public class SonidoManager : MonoBehaviour
         if (!src.isPlaying) src.Play();
     }
 
-    public void StopEnemyFootsteps(GameObject enemy)
+    public void DetenerPasosEnemigo(GameObject enemy)
     {
         if (enemy == null) return;
         if (footstepSources.TryGetValue(enemy, out var src) && src != null)
@@ -221,8 +226,8 @@ public class SonidoManager : MonoBehaviour
         }
     }
 
-    // Limpia referencias cuando un enemigo se destruye
-    public void UnregisterEnemy(GameObject enemy)
+    // Elimina el AudioSource cuando un enemigo muere
+    public void DesregistrarEnemigo(GameObject enemy)
     {
         if (enemy == null) return;
         if (footstepSources.TryGetValue(enemy, out var src) && src != null)
@@ -233,8 +238,11 @@ public class SonidoManager : MonoBehaviour
         footstepSources.Remove(enemy);
     }
 
-    // ---------- Utilidades ----------
-    private IEnumerator FadeAudio(AudioSource src, float targetVolume, float duration, bool stopAtEnd = false)
+
+    // Utilidades 
+
+    // Corrutina para subir o bajar el volumen progresivamente
+    private IEnumerator RealizarFadeAudio(AudioSource src, float targetVolume, float duration, bool stopAtEnd = false)
     {
         if (src == null) yield break;
         float start = src.volume;

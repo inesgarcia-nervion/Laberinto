@@ -5,26 +5,28 @@ using UnityEngine.SceneManagement;
 public class MetaFinal : MonoBehaviour
 {
     [Header("Configuración UI")]
-    public GameObject objetoFinJuego; // Arrastra aquí el objeto 'finJuego' del Canvas
-    public float tiempoDeEspera = 3.0f;
+    public GameObject objetoFinJuego; // Referencia al panel de Fin de Juego
+    public float tiempoDeEspera = 3.0f; // Tiempo antes de volver al menú
 
     [Header("Configuración Escena")]
-    public string nombreEscenaMenu = "Menú"; // O el índice 0
+    public string nombreEscenaMenu = "Menú";
 
-    private bool metaAlcanzada = false;
-    private bool playerInRange = false;
+    private bool playerInRange = false; // Indica si el jugador está en el trigger
 
-    // Update is called once per frame
+    private bool juegoTerminado = false;
+
     void Update()
     {
-        if (playerInRange && Input.GetKeyDown(KeyCode.E))
+        if (!juegoTerminado && playerInRange && Input.GetKeyDown(KeyCode.E))
         {
-            Timer timer = FindObjectOfType<Timer>();
+            juegoTerminado = true;
+
+            // Busca el Timer usando el nuevo método optimizado de Unity
+            Timer timer = Object.FindFirstObjectByType<Timer>();
             if (timer != null)
             {
-                // Esto ejecuta tu función GuardarEnLista() del script Timer
+                // Guarda el tiempo final
                 timer.FinalizarNivel();
-                Debug.Log("Tiempo guardado correctamente.");
             }
 
             StartCoroutine(SecuenciaVictoria());
@@ -35,7 +37,6 @@ public class MetaFinal : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            metaAlcanzada = true;
             playerInRange = true;
         }
     }
@@ -44,40 +45,40 @@ public class MetaFinal : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            metaAlcanzada = false;
             playerInRange = false;
         }
     }
 
     IEnumerator SecuenciaVictoria()
     {
-        // 1. Detener el Cronómetro (opcional, para que deje de contar mientras celebras)
+        Time.timeScale = 0f;
+
+        // Detiene el contador de tiempo si existe
         if (GameManager.Instance != null)
         {
-            // Podrías añadir un método en GameManager para pausar, 
-            // o buscar el script del Timer y pararlo:
-            Timer timer = FindObjectOfType<Timer>();
+            Timer timer = Object.FindFirstObjectByType<Timer>();
             if (timer != null) timer.FinalizarNivel();
         }
 
-        // 2. Mostrar el mensaje
+        // Muestra el mensaje de victoria
         if (objetoFinJuego != null)
         {
             objetoFinJuego.SetActive(true);
         }
 
-        // 3. Esperar 3 segundos
-        yield return new WaitForSeconds(tiempoDeEspera);
+        // Espera unos segundos
+        yield return new WaitForSecondsRealtime(tiempoDeEspera);
 
-        // 4. Limpiar el GameManager (IMPORTANTE)
-        // Como el juego acabó, destruimos el GameManager para que si vuelves a jugar
-        // empieces con vidas y tiempo de 0, no con los datos viejos.
+        // Destruye el GameManager para reiniciar datos en la próxima partida
         if (GameManager.Instance != null)
         {
             Destroy(GameManager.Instance.gameObject);
         }
 
-        // 5. Cargar el Menú Principal (Asumiendo que es la escena 0)
+        // Volver a poner el tiempo a 1 antes de cambiar de escena, para que el menú no se congele
+        Time.timeScale = 1f;
+
+        // Vuelve al menú principal (Índice 0)
         SceneManager.LoadScene(0);
     }
 }

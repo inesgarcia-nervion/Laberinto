@@ -4,12 +4,12 @@ using UnityEngine;
 public class Health : MonoBehaviour
 {
     [Header("Configuración de Interacción")]
-    public KeyCode teclaDeActivacion = KeyCode.E; // Tecla para recoger la vida
-    public float duracionMensaje = 2.0f; // Cuánto tiempo dura el mensaje
+    public KeyCode teclaDeActivacion = KeyCode.E; // Tecla para recoger
+    public float duracionMensaje = 2.0f; // Duración del mensaje en pantalla
 
     private TextMeshProUGUI mensajeAlertaHud;
 
-    private bool jugadorEstaCerca = false;
+    private bool jugadorEstaCerca = false; // Flag de proximidad
     private Player jugadorActual;
     private Collider2D objetoCollider;
 
@@ -17,13 +17,14 @@ public class Health : MonoBehaviour
     {
         objetoCollider = GetComponent<Collider2D>();
 
+        // Busca el objeto HUD para alertas
         GameObject alertaObject = GameObject.FindWithTag("GameAlert");
 
         if (alertaObject != null)
         {
             mensajeAlertaHud = alertaObject.GetComponent<TextMeshProUGUI>();
         }
-      
+
     }
 
 
@@ -60,6 +61,7 @@ public class Health : MonoBehaviour
 
         bool vidaGanada = jugadorActual.GanarVida();
 
+        // Si se pudo ganar vida, destruye el objeto, si no, avisa que está lleno
         if (vidaGanada)
         {
             if (objetoCollider != null) objetoCollider.enabled = false;

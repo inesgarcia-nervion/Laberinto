@@ -2,21 +2,20 @@ using UnityEngine;
 
 public static class AudioBootstrapRuntime
 {
+    // Método que se ejecuta antes de cargar la primera escena
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
     private static void Init()
     {
         if (SonidoManager.Instance != null) return;
 
-        const string path = "Prefabs/SonidoManager"; // ruta relativa dentro de Assets/Resources
+        // Carga e instancia el SonidoManager desde Resources si no existe
+        const string path = "Prefabs/SonidoManager";
         GameObject prefab = Resources.Load<GameObject>(path);
         if (prefab == null)
         {
-            Debug.LogWarning($"[AudioBootstrapRuntime] Prefab no encontrado en Assets/Resources/{path}.prefab");
             return;
         }
 
         Object.Instantiate(prefab);
-        Debug.Log("[AudioBootstrapRuntime] Instanciado SonidoManager automáticamente desde Resources/" + path);
     }
 }
-

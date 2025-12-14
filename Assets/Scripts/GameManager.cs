@@ -6,14 +6,15 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
+    // Singleton del GameManager
     public static GameManager Instance { get; private set; }
 
     [Header("UI")]
-    public TMP_Text textoTiempo;
-    public string timerTag = "Timer";
+    public TMP_Text textoTiempo; // Referencia al texto del temporizador
+    public string timerTag = "Timer"; // Tag para buscar el temporizador
 
     [Header("Estado persistente")]
-    public int playerLives = 2;
+    public int playerLives = 2; // Vidas guardadas entre escenas
 
     [Header("Sistema de Fases (opcional, en la misma escena)")]
     public GameObject[] fases;
@@ -24,6 +25,7 @@ public class GameManager : MonoBehaviour
 
     void Awake()
     {
+        // Configuración Singleton
         if (Instance != null && Instance != this)
         {
             Destroy(gameObject);
@@ -52,6 +54,7 @@ public class GameManager : MonoBehaviour
         if (textoTiempo == null)
             ReasignarTimer();
 
+        // Activa solo la fase actual si se usa el sistema de fases
         if (fases != null && fases.Length > 0)
         {
             for (int i = 0; i < fases.Length; i++)
@@ -61,6 +64,7 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {
+        // Actualiza el texto del tiempo en pantalla
         if (textoTiempo != null)
         {
             float tiempoTranscurrido = Time.time - tiempoInicio;
@@ -71,22 +75,16 @@ public class GameManager : MonoBehaviour
 
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
+        // Busca referencias y reinicia estado al cargar escena
         if (textoTiempo == null)
             ReasignarTimer();
 
-        var scenePhases = GameObject.FindGameObjectsWithTag("PhaseRoot");
-        if (scenePhases != null && scenePhases.Length > 0)
-        {
-            fases = scenePhases.OrderBy(g => g.name).ToArray();
+        fases = null;
+        faseActual = 0;
 
-            if (faseActual < 0) faseActual = 0;
-            if (faseActual >= fases.Length) faseActual = fases.Length - 1;
-
-            for (int i = 0; i < fases.Length; i++)
-                fases[i].SetActive(i == faseActual);
-        }
-
-        var player = FindObjectOfType<Player>();
+       
+        // Busca al jugador con el método nuevo
+        var player = Object.FindFirstObjectByType<Player>();
         if (player != null)
         {
             player.salud = playerLives;
@@ -96,6 +94,7 @@ public class GameManager : MonoBehaviour
 
     void ReasignarTimer()
     {
+        // Intenta encontrar el texto del temporizador por Tag
         if (!string.IsNullOrEmpty(timerTag))
         {
             var go = GameObject.FindWithTag(timerTag);
@@ -110,7 +109,8 @@ public class GameManager : MonoBehaviour
             }
         }
 
-        foreach (var tmp in FindObjectsOfType<TMP_Text>())
+        // Si falla, busca por tipo usando el método moderno
+        foreach (var tmp in Object.FindObjectsByType<TMP_Text>(FindObjectsSortMode.None))
         {
             if ((tmp.name != null && tmp.name.ToLower().Contains("tiemp")) ||
                 (tmp.text != null && tmp.text.ToLower().Contains("tiemp")))
@@ -121,25 +121,26 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    // Fuente de verdad del tiempo transcurrido
-    public float GetElapsedTime()
+    // Devuelve el tiempo total jugado desde el inicio
+    public float ObtenerTiempoTranscurrido()
     {
         if (!inicializado) return 0f;
         return Time.time - tiempoInicio;
     }
 
-    public void SetPlayerLives(int lives)
+    public void EstablecerVidasJugador(int lives)
     {
         playerLives = lives;
     }
 
-    public void ResetTimer()
+    public void ReiniciarTemporizador()
     {
         tiempoInicio = Time.time;
     }
 
     public void PasarDeFase()
     {
+        // Avanza fase en la misma escena si existen fases configuradas
         if (fases != null && fases.Length > 0)
         {
             if (faseActual >= 0 && faseActual < fases.Length)
@@ -152,9 +153,10 @@ public class GameManager : MonoBehaviour
                 fases[faseActual].SetActive(true);
                 return;
             }
-           
+
         }
 
+        // Si no hay más fases, carga la siguiente escena
         int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
         int nextIndex = currentSceneIndex + 1;
 
@@ -165,15 +167,14 @@ public class GameManager : MonoBehaviour
 
     }
 
-    public bool IsLastPhase()
+    public bool EsUltimaFase()
     {
-        // Si gestionas fases por GameObjects en la misma escena
+        // Comprueba si es la última fase (local o escena)
         if (fases != null && fases.Length > 0)
         {
             return faseActual >= fases.Length - 1;
         }
 
-        // Si avanzas por escenas en el build index
         int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
         return currentSceneIndex + 1 >= SceneManager.sceneCountInBuildSettings;
     }
