@@ -69,7 +69,7 @@ public class GameManager : MonoBehaviour
         {
             float tiempoTranscurrido = Time.time - tiempoInicio;
             string t = string.Format("{0:0}:{1:00}", Mathf.Floor(tiempoTranscurrido / 60), Mathf.Floor(tiempoTranscurrido % 60));
-            textoTiempo.text = "Tiempo: " + t;
+            textoTiempo.text = "Time: " + t;
         }
     }
 

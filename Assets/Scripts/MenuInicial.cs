@@ -67,7 +67,7 @@ public class MenuInicial : MonoBehaviour
 
         if (string.IsNullOrEmpty(data))
         {
-            if (textoParaMostrarRecords != null) textoParaMostrarRecords.text = "Aún no hay tiempos registrados.";
+            if (textoParaMostrarRecords != null) textoParaMostrarRecords.text = "There are no records yet.";
             return;
         }
 

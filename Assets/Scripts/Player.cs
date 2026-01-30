@@ -219,7 +219,7 @@ public class Player : MonoBehaviour
             // Usamos FindObjectsByType para buscar en la escena de forma moderna
             foreach (var t in Object.FindObjectsByType<TextMeshProUGUI>(FindObjectsSortMode.None))
             {
-                if (t.text.Contains("Vidas") || t.name.ToLower().Contains("vida") || t.name.ToLower().Contains("vidas"))
+                if (t.text.Contains("Lifes") || t.name.ToLower().Contains("vida") || t.name.ToLower().Contains("vidas"))
                 {
                     vidasHud = t;
                     break;
@@ -229,7 +229,7 @@ public class Player : MonoBehaviour
 
         if (vidasHud != null)
         {
-            vidasHud.text = "Vidas: " + Mathf.FloorToInt(salud).ToString();
+            vidasHud.text = "Lifes: " + Mathf.FloorToInt(salud).ToString();
         }
     }
 }

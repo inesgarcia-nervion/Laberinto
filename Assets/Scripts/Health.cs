@@ -69,7 +69,7 @@ public class Health : MonoBehaviour
         }
         else
         {
-            MostrarMensaje("¡Vidas Completas!", duracionMensaje);
+            MostrarMensaje("¡Full Health!", duracionMensaje);
         }
     }
 
